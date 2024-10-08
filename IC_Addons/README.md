@@ -23,3 +23,9 @@ Read the [Game Settings Fix README](IC_GameSettingsFix_Extra/README.md)
 An addon that will disable or enable the EGS overlay during offline stacking.
 
 Read the [EGS Overlay Swatter README](IC_EGSOverlaySwatter_Extra/README.md)
+
+### BrivGemFarm Hide Default Profile
+
+An addon that will hide the default gem farm profile as long as another profile exists.
+
+Read the [BrivGemFarm Hide Default Profile README](IC_BrivGemFarm_HideDefaultProfile_Extra/README.md)
