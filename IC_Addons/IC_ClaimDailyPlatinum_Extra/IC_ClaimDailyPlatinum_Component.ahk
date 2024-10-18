@@ -359,11 +359,8 @@ Class IC_ClaimDailyPlatinum_Component
 	{
 		if (this.Running && !this.Settings[CDP_key])
 			return "Disabled."
-		if (this.CurrentCD[CDP_key] > 0)
-			return this.FmtSecs(this.CurrentCD[CDP_key])
 		if (this.Claimable[CDP_key])
 			return "Claiming on next offline stack."
-		this.CurrentCD[CDP_key] := 60
 		return this.FmtSecs(this.CurrentCD[CDP_key])
 	}
 	
