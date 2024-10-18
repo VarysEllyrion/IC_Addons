@@ -1,0 +1,2 @@
+10   October 2024 - v0.0.1
+ - An add on that will claim your daily platinum automagically so you don't have to.
