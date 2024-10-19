@@ -1,3 +1,5 @@
+19   October 2024 - v0.0.3
+ - Fixed (hopefully) a bug where ClaimDailyPlatinum and PotionSustain would be incompatible.
 19   October 2024 - v0.0.2
  - Adding a little bit of sanity checking when sending server calls.
  - Renaming a variable because I realised it might be overwriting a global of the same name.

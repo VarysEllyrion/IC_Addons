@@ -62,23 +62,6 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 
 	StackRestart()
 	{
-		CDP_useModifiedStackRestart := false
-		for k,v in CDP_ClaimedState
-		{
-			if (v == 1)
-			{
-				CDP_useModifiedStackRestart := true
-				break
-			}
-		}
-		if (CDP_useModifiedStackRestart)
-			this.CDP_ModifiedStackRestart()
-		else
-			this.base.StackRestart()
-	}
-
-	CDP_ModifiedStackRestart()
-	{
 		lastStacks := stacks := g_BrivUserSettings[ "AutoCalculateBrivStacks" ] ? g_SF.Memory.ReadSBStacks() : this.GetNumStacksFarmed()
 		targetStacks := g_BrivUserSettings[ "AutoCalculateBrivStacks" ] ? (this.TargetStacks - this.LeftoverStacks) : g_BrivUserSettings[ "TargetStacks" ]
 		if (stacks >= targetStacks)
