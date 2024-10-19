@@ -1,6 +1,12 @@
 # Claim Daily Platinum Addon
 
-This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to.
+This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to. It can also claim free weekly shop offers.
+
+___
+
+![Claim Daily Platinum Fix Addon Preview Image](images/ClaimDailyPlatinumAddonPreview.png)
+
+___
 
 ## Claim Daily Platinum
 
@@ -10,6 +16,8 @@ The timer for it is initialised to check 1 minute after starting the Gem Farm sc
 
 > [!NOTE]
 > *This setting is on by default.*
+
+___
 
 ## Claim Free Weekly Shop Offers
 
