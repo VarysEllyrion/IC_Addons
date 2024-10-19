@@ -1,4 +1,6 @@
-06   October 2024 - v0.2.5
+19   October 2024 - v0.2.7
+ - Fixed a bug where having 0 of a potion would break the addon.
+06   October 2024 - v0.2.6
  - Changed Sanity Checking for ISB Thresholds so that the defaults aren't falling foul of it. (Oops)
 16 September 2024 - v0.2.4
  - Added support for saving settings to `g_BrivUserSettingsFromAddons`. Shouldn't affect the vast majority of users.

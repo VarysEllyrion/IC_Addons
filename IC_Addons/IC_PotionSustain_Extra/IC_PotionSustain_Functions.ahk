@@ -430,7 +430,7 @@ Class IC_PotionSustain_Component
 		for k,v in this.PotAmounts
 		{
 			if (v == -1)
-				this.PotAmounts[k] = 0
+				this.PotAmounts[k] := 0
 		}
 	}
 	
