@@ -2,6 +2,9 @@
 
 This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to. It can also claim free weekly shop offers.
 
+> [!WARNING]
+> *If the addon has claimed the daily platinum - and then you purchase the Daily Boost - you will need to claim the boost for that day manually. The addon will be able to claim the boost with all future days.*
+
 ___
 
 ![Claim Daily Platinum Fix Addon Preview Image](images/ClaimDailyPlatinumAddonPreview.png)
