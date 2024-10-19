@@ -2,6 +2,9 @@
 
 This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to. It can also claim free weekly shop offers.
 
+> [!CAUTION]
+> *This addon currently does NOT cooperate with Potion Sustain addon. Consider them mutually exclusive. Use one or the other. Not both.*
+
 ___
 
 ![Claim Daily Platinum Fix Addon Preview Image](images/ClaimDailyPlatinumAddonPreview.png)
