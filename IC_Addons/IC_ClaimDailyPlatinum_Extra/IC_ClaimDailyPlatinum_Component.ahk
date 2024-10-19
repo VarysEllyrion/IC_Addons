@@ -218,7 +218,7 @@ Class IC_ClaimDailyPlatinum_Component
 				{
 					this.Claimed[k] += 1 ; Increment counter
 					this.Claimable[k] := false ; Set it not claimable
-					this.CurrentCD[k] = 0 ; Set current CD to 0
+					this.CurrentCD[k] := 0 ; Set current CD to 0
 					IC_ClaimDailyPlatinum_Functions.ClearClaimedState() ; Clear claimed state for StackRestart
 					CDP_CurrClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k) ; Clear claimed state here too
 				}
