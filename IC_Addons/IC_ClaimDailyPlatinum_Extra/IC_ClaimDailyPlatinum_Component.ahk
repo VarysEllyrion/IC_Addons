@@ -197,7 +197,7 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		else
 			return
-		CDP_newCurrent = ""
+		CDP_newCurrent := ""
 		CDP_AnyClaimable := false
 		CDP_ChangesInClaimable := false
 		CDP_ApplyNewCurrentCD := true
