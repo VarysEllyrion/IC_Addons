@@ -36,6 +36,7 @@ class IC_ClaimDailyPlatinum_SharedData_Class extends IC_SharedData_Class
 	
 	CDP_ClearClaimedState(CDP_key)
 	{
+		CDP_ClaimableParams[CDP_key] := ""
 		CDP_ClaimedState[CDP_key] := 0
 	}
 	
@@ -158,6 +159,11 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 	ClaimDailyPlatinum(CDP_key := "Platinum")
 	{
 		params := CDP_ClaimableParams[CDP_key]
+		if (params == "")
+		{
+			CDP_ClaimedState[CDP_key] := 0
+			return
+		}
 		extraParams := "&is_boost=0" . params
 		response := g_ServerCall.ServerCall("claimdailyloginreward",extraParams)
 		if (IsObject(response) && response.success)
@@ -176,6 +182,11 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 	ClaimFreeWeeklyOffers(CDP_key := "FreeOffer")
 	{
 		params := CDP_ClaimableParams[CDP_key]
+		if (params == "")
+		{
+			CDP_ClaimedState[CDP_key] := 0
+			return
+		}
 		for k,v in CDP_FreeOfferIDs
 		{
 			extraParams := "&offer_id=" . v . params

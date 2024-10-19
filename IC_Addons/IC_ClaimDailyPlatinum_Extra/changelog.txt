@@ -1,2 +1,5 @@
-10   October 2024 - v0.0.1
+19   October 2024 - v0.0.2
+ - Adding a little bit of sanity checking when sending server calls.
+ - Renaming a variable because I realised it might be overwriting a global of the same name.
+18   October 2024 - v0.0.1
  - An add on that will claim your daily platinum automagically so you don't have to.

@@ -212,15 +212,15 @@ Class IC_ClaimDailyPlatinum_Component
 			if (CDP_newCurrent <= 0)
 			{
 				CDP_newCurrent := 0
-				CDP_ClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k)
+				CDP_CurrClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k)
 				; If it has been claimed:
-				if (CDP_ClaimedState == 2)
+				if (CDP_CurrClaimedState == 2)
 				{
 					this.Claimed[k] += 1 ; Increment counter
 					this.Claimable[k] := false ; Set it not claimable
 					this.CurrentCD[k] = 0 ; Set current CD to 0
 					IC_ClaimDailyPlatinum_Functions.ClearClaimedState() ; Clear claimed state for StackRestart
-					CDP_ClaimedState := 0 ; Clear claimed state here too
+					CDP_CurrClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k) ; Clear claimed state here too
 				}
 				; If it isn't claimable:
 				if (!this.Claimable[k])
@@ -231,7 +231,7 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_ApplyNewCurrentCD := false ; Don't change current cooldown from detected
 				}
 				; If it is claimable and the claim state is 0:
-				if (CDP_ClaimedState == 0 && this.Claimable[k])
+				if (CDP_CurrClaimedState == 0 && this.Claimable[k])
 				{
 					; Set claimables:
 					IC_ClaimDailyPlatinum_Functions.SetClaimables(this.GetBoilerplate(), this.Claimable, this.FreeOfferIDs)
