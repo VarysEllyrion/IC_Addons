@@ -55,7 +55,7 @@ Class IC_ClaimDailyPlatinum_Component
 {
 	static SettingsPath := A_LineFile . "\..\ClaimDailyPlatinum_Settings.json"
 	static WaitingMessage := "Waiting for BrivGemFarm to Start."
-	static OfflineMessage := "Waiting for the next offline progress."
+	static OfflineMessage := "Waiting for the next offline stack restart."
 	
 	Injected := false
 	Running := false
@@ -64,14 +64,8 @@ Class IC_ClaimDailyPlatinum_Component
 	Settings := {}
 	; The timer for MainLoop:
 	MainLoopCD := 60 ; in seconds = 1 minute.
-	; The timer for OfflineCheck:
-	OfflineCheckCD := 1000 ; 1000 in milliseconds = 1 second.
 	; The starting cooldown for each type:
 	StartingCD := 60 ; in seconds = 10 minutes.
-	; The cooldown period between checks for each type (if value can't be pulled from calls):
-	;     Platinum:   28,800 in seconds is  8 hours (3 times per day)
-	;     FreeOffer: 201,600 in seconds is 56 hours (3 times per week)
-	BaseCD := {"Platinum":28800,"FreeOffer":201600}
 	; The current cooldown for each type:
 	CurrentCD := {"Platinum":0,"FreeOffer":0}
 	; The amount of times each type has been claimed:
@@ -282,7 +276,7 @@ Class IC_ClaimDailyPlatinum_Component
 			}
 		}
 		if (this.ArrSize(CDP_returnArr) == 0)
-			CDP_returnArr := [false, this.BaseCD[CDP_key]]
+			CDP_returnArr := [false, this.StartingCD]
 		return CDP_returnArr
 	}
 	
@@ -357,11 +351,15 @@ Class IC_ClaimDailyPlatinum_Component
 	
 	ProduceGUITimerMessage(CDP_key)
 	{
-		if (this.Running && !this.Settings[CDP_key])
-			return "Disabled."
-		if (this.Claimable[CDP_key])
-			return "Claiming on next offline stack."
-		return this.FmtSecs(this.CurrentCD[CDP_key])
+		if (this.Running)
+		{
+			if (!this.Settings[CDP_key])
+				return "Disabled."
+			if (this.Claimable[CDP_key])
+				return "Claiming on next offline stack."
+			return this.FmtSecs(this.CurrentCD[CDP_key])
+		}
+		return ""
 	}
 	
 	ProduceGUIClaimedMessage(CDP_key)

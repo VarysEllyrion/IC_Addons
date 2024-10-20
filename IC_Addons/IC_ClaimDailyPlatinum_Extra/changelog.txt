@@ -1,3 +1,7 @@
+20   October 2024 - v0.0.4
+ - Fixed a few bugs caused by typos.
+ - Added a slight delay to checking for the updated cooldown after a successful claim.
+ - Removed redundant code.
 19   October 2024 - v0.0.3
  - Fixed (hopefully) a bug where ClaimDailyPlatinum and PotionSustain would be incompatible.
 19   October 2024 - v0.0.2

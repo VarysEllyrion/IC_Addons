@@ -1,7 +1,5 @@
 class IC_ClaimDailyPlatinum_Functions
 {
-
-	static LogFile := A_LineFile . "\..\logs.json"
 	
 	; ======================
 	; ===== MAIN STUFF =====
