@@ -132,6 +132,9 @@ Class IC_GameSettingsFix_Component
 {
 	static SettingsPath := A_LineFile . "\..\GameSettingsFix_Settings.json"
 	static ProfilesPath := A_LineFile . "\..\profiles\"
+	
+	WaitingMessage := "Waiting for Gem Farm to start."
+	ReadOnlyMessage := "Game settings file is set to read-only. Please disable that immediately."
 
 	Injected := false
 	TimerFunctions := {}
@@ -171,7 +174,7 @@ Class IC_GameSettingsFix_Component
 		if (!IC_GameSettingsFix_Functions.IsGameClosed() AND (this.GameSettingsFileLocation == "" OR !FileExist(this.GameSettingsFileLocation)))
 			this.FindSettingsFile()
 		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
-		this.UpdateMainStatus("Waiting for Gem Farm to start.")
+		this.UpdateMainStatus(this.WaitingMessage)
 	}
 	
 	LoadSettings(gsfPathToGetSettings := "")
@@ -403,11 +406,12 @@ Class IC_GameSettingsFix_Component
 	
 	UpdateGameSettingsFix()
 	{
-		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
 		if (this.ReadOnly)
 		{
-			this.UpdateMainStatus("Game settings file is set to read-only. Please disable that immediately.")
-			return
+			this.UpdateMainStatus(this.ReadOnlyMessage)
+			this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
+			if (this.ReadOnly)
+				return
 		}
 		this.UpdateMainStatus("Idle. Waiting for next game close.")
 		if (IC_GameSettingsFix_Functions.IsGameClosed())
@@ -431,6 +435,12 @@ Class IC_GameSettingsFix_Component
 		this.UpdateMainStatus("Game is closed. Verifying settings.")
 		if (this.GameSettingsFileLocation != "" AND FileExist(this.GameSettingsFileLocation))
 		{
+			this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
+			if (this.ReadOnly)
+			{
+				this.UpdateMainStatus(this.ReadOnlyMessage)
+				return
+			}
 			g_GSF_settingsFile := this.ReadAndEditSettingsString(this.GameSettingsFileLocation)
 			if (this.MadeChanges)
 				this.WriteSettingsStringToFile(g_GSF_settingsFile, this.GameSettingsFileLocation)
@@ -494,7 +504,8 @@ Class IC_GameSettingsFix_Component
 			MsgBox, 48, Error, Cannot change settings while the game is running.
 			return
 		}
-		if (IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation))
+		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
+		if (this.ReadOnly)
 		{
 			MsgBox, 48, Error, The game settings file is read-only. Cannot change it.
 			return
@@ -568,7 +579,7 @@ Class IC_GameSettingsFix_Component
 			SetTimer, %k%, Off
 			SetTimer, %k%, Delete
 		}
-		this.UpdateMainStatus("Waiting for Gem Farm to start.")
+		this.UpdateMainStatus(this.WaitingMessage)
 	}
 	
 }
