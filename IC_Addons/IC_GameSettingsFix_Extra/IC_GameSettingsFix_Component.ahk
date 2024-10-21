@@ -494,6 +494,11 @@ Class IC_GameSettingsFix_Component
 			MsgBox, 48, Error, Cannot change settings while the game is running.
 			return
 		}
+		if (IC_GameSettingsFix_Functions.IsReadOnly())
+		{
+			MsgBox, 48, Error, The game settings file is read-only. Cannot change it.
+			return
+		}
 		this.FixGameSettings()
 	}
 	
