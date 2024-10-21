@@ -76,4 +76,12 @@ Class IC_GameSettingsFix_Functions
 		return InStr(FileExist(inputFolder),"D")
 	}
 	
+	IsReadOnly(gameSettingsFileLoc)
+	{
+		FileGetAttrib, GSF_fileAttributes, %gameSettingsFileLoc%
+		if (InStr(GSF_fileAttributes, "R"))
+			return true
+		return false
+	}
+	
 }

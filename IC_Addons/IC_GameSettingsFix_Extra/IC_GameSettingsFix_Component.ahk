@@ -133,6 +133,7 @@ Class IC_GameSettingsFix_Component
 	static SettingsPath := A_LineFile . "\..\GameSettingsFix_Settings.json"
 	static ProfilesPath := A_LineFile . "\..\profiles\"
 
+	Injected := false
 	TimerFunctions := {}
 	DefaultSettings := {"TargetFramerate":600,"PercentOfParticlesSpawned":0,"resolution_x":1280,"resolution_y":720,"resolution_fullscreen":false,"ReduceFramerateWhenNotInFocus":false,"LevelupAmountIndex":4,"UseConsolePortraits":false,"FormationSaveIncludeFeatsCheck":false,"NarrowHeroBoxes":true,"CurrentProfile":""}
 	Settings := {}
@@ -141,6 +142,7 @@ Class IC_GameSettingsFix_Component
 	MadeChanges := false
 	FixedCounter := 0
 	CurrentProfile := this.DefaultSettings["CurrentProfile"]
+	ReadOnly := false
 
 	; ================================
 	; ===== LOADING AND SETTINGS =====
@@ -155,24 +157,26 @@ Class IC_GameSettingsFix_Component
 		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "CreateTimedFunctions"))
 		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StartTimedFunctions"))
 		g_BrivFarmAddonStopFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StopTimedFunctions"))
+		this.Injected := true
 	}
 	
 	Init()
 	{
 		Global
-		Gui, Submit, NoHide
+		if (!this.Injected)
+			return ""
 		this.LoadSettings()
 		this.UpdateProfilesDDL(this.CurrentProfile)
 		this.CreateTooltips()
 		if (!IC_GameSettingsFix_Functions.IsGameClosed() AND (this.GameSettingsFileLocation == "" OR !FileExist(this.GameSettingsFileLocation)))
 			this.FindSettingsFile()
+		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
 		this.UpdateMainStatus("Waiting for Gem Farm to start.")
 	}
 	
 	LoadSettings(gsfPathToGetSettings := "")
 	{
 		Global
-		Gui, Submit, NoHide
 		writeSettings := false
 		if (gsfPathToGetSettings == "")
 			gsfPathToGetSettings := this.SettingsPath
@@ -399,6 +403,12 @@ Class IC_GameSettingsFix_Component
 	
 	UpdateGameSettingsFix()
 	{
+		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
+		if (this.ReadOnly)
+		{
+			this.UpdateMainStatus("Game settings file is set to read-only. Please disable that immediately.")
+			return
+		}
 		this.UpdateMainStatus("Idle. Waiting for next game close.")
 		if (IC_GameSettingsFix_Functions.IsGameClosed())
 		{
