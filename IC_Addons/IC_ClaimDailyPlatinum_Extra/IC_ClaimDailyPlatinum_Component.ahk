@@ -195,6 +195,15 @@ Class IC_ClaimDailyPlatinum_Component
 		CDP_AnyClaimable := false
 		CDP_ChangesInClaimable := false
 		CDP_ApplyNewCurrentCD := true
+		SharedRunData := ""
+		try {
+			SharedRunData := ComObjActive(g_BrivFarm.GemFarmGUID)
+		}
+		catch
+		{
+			this.UpdateMainStatus("Could not connect to the Gem Farm script.")
+			return
+		}
 		; Decrement cooldown and if the timer is <= 0 check if anything can be claimed
 		for k,v in this.CurrentCD
 		{
@@ -206,15 +215,15 @@ Class IC_ClaimDailyPlatinum_Component
 			if (CDP_newCurrent <= 0)
 			{
 				CDP_newCurrent := 0
-				CDP_CurrClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k)
+				CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k)
 				; If it has been claimed:
 				if (CDP_CurrClaimedState == 2)
 				{
 					this.Claimed[k] += 1 ; Increment counter
 					this.Claimable[k] := false ; Set it not claimable
 					this.CurrentCD[k] := 0 ; Set current CD to 0
-					IC_ClaimDailyPlatinum_Functions.ClearClaimedState() ; Clear claimed state for StackRestart
-					CDP_CurrClaimedState := IC_ClaimDailyPlatinum_Functions.GetClaimedState(k) ; Clear claimed state here too
+					SharedRunData.CDP_ClearClaimedState(k) ; Clear claimed state for StackRestart
+					CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k) ; Clear claimed state here too
 				}
 				; If it isn't claimable:
 				if (!this.Claimable[k])
@@ -228,7 +237,14 @@ Class IC_ClaimDailyPlatinum_Component
 				if (CDP_CurrClaimedState == 0 && this.Claimable[k])
 				{
 					; Set claimables:
-					IC_ClaimDailyPlatinum_Functions.SetClaimables(this.GetBoilerplate(), this.Claimable, this.FreeOfferIDs)
+					SharedRunData.CDP_SetClaimable(k, this.GetBoilerplate())
+					if (k == "FreeOffer")
+					{
+						for l,b in this.FreeOfferIDs
+						{
+							SharedRunData.CDP_AddFreebieOfferIDs(b)
+						}
+					}
 					CDP_AnyClaimable := true ; And allow the main status to change
 				}
 			}

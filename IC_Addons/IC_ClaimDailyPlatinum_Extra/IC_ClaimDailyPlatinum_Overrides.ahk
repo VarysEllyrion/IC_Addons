@@ -157,6 +157,13 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 				response := g_ServerCall.ServerCall("claimdailyloginreward",extraParams)
 			}
 		}
+		else
+		{
+			; server call failed
+			CDP_ClaimableParams[CDP_key] := ""
+			CDP_ClaimedState[CDP_key] := 0
+			return
+		}
 		
 		CDP_ClaimableParams[CDP_key] := ""
 		CDP_ClaimedState[CDP_key] := 2
@@ -174,6 +181,14 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 		{
 			extraParams := "&offer_id=" . v . params
 			response := g_ServerCall.ServerCall("PurchaseALaCarteOffer",extraParams)
+			if (!IsObject(response) || !response.success)
+			{
+				; server call failed
+				CDP_ClaimableParams[CDP_key] := ""
+				CDP_ClaimedState[CDP_key] := 0
+				CDP_FreeOfferIDs := []
+				return
+			}
 		}
 		
 		CDP_ClaimableParams[CDP_key] := ""
