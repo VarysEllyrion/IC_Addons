@@ -263,20 +263,24 @@ Class IC_ClaimDailyPlatinum_Component
 		{
 			this.FreeOfferIDs := []
 			params := this.GetBoilerplate()
-			response := g_ServerCalls.ServerCall("getalacarteoffers",params)
+			response := g_ServerCalls.ServerCall("revealalacarteoffers",params)
 			if (IsObject(response) && response.success)
 			{
-				for k,v in response.offers.offers
+				response := g_ServerCalls.ServerCall("getalacarteoffers",params)
+				if (IsObject(response) && response.success)
 				{
-					if (v.type != "free" || v.cost > 0)
-						continue
-					if (!v.purchased)
-						this.FreeOfferIDs.Push(v.offer_id)
+					for k,v in response.offers.offers
+					{
+						if (v.type != "free" || v.cost > 0)
+							continue
+						if (!v.purchased)
+							this.FreeOfferIDs.Push(v.offer_id)
+					}
+					if (this.ArrSize(this.FreeOfferIDs) > 0)
+						CDP_returnArr := [true, 0]
+					else
+						CDP_returnArr := [false, response.offers.time_remaining + 30]
 				}
-				if (this.ArrSize(this.FreeOfferIDs) > 0)
-					CDP_returnArr := [true, 0]
-				else
-					CDP_returnArr := [false, response.offers.time_remaining + 30]
 			}
 		}
 		else ; Platinum
