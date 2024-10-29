@@ -277,7 +277,7 @@ Class IC_ClaimDailyPlatinum_Component
 				if (this.ArrSize(this.FreeOfferIDs) > 0)
 					CDP_returnArr := [true, 0]
 				else
-					CDP_returnArr := [false, response.offers.time_remaining + 30]
+					CDP_returnArr := [false, response.offers.time_remaining + this.MainLoopCD]
 			}
 		}
 		else ; Platinum
@@ -289,7 +289,7 @@ Class IC_ClaimDailyPlatinum_Component
 				if (response.daily_login_details.next_claim_seconds == 0)
 					CDP_returnArr := [true, 0]
 				else
-					CDP_returnArr := [false, response.daily_login_details.next_claim_seconds + 30]
+					CDP_returnArr := [false, response.daily_login_details.next_claim_seconds + this.MainLoopCD]
 			}
 		}
 		if (this.ArrSize(CDP_returnArr) == 0)
