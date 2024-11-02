@@ -1,3 +1,5 @@
+ 2  November 2024 - v0.0.7
+ - Changed the way the timers work to avoid drift.
 23   October 2024 - v0.0.6
  - Adding support for automatically revealing the weekly offers to minimise their time drift (since their 7 day clock doesn't start until after they've been revealed).
 23   October 2024 - v0.0.5

@@ -63,9 +63,11 @@ Class IC_ClaimDailyPlatinum_Component
 	DefaultSettings := {"Platinum":true,"FreeOffer":false}
 	Settings := {}
 	; The timer for MainLoop:
-	MainLoopCD := 60 ; in seconds = 1 minute.
+	MainLoopCD := 60000 ; in milliseconds = 1 minute.
 	; The starting cooldown for each type:
-	StartingCD := 60 ; in seconds = 10 minutes.
+	StartingCD := 60000 ; in milliseconds = 1 minutes.
+	; The delay between when the server says a timer resets and when to check (for safety):
+	SafetyDelay := 30000 ; in milliseconds = 30 seconds.
 	; The current cooldown for each type:
 	CurrentCD := {"Platinum":0,"FreeOffer":0}
 	; The amount of times each type has been claimed:
@@ -191,10 +193,7 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		else
 			return
-		CDP_newCurrent := ""
 		CDP_AnyClaimable := false
-		CDP_ChangesInClaimable := false
-		CDP_ApplyNewCurrentCD := true
 		SharedRunData := ""
 		try {
 			SharedRunData := ComObjActive(g_BrivFarm.GemFarmGUID)
@@ -209,12 +208,8 @@ Class IC_ClaimDailyPlatinum_Component
 		{
 			if (!this.Settings[k])
 				continue
-			CDP_newCurrent := this.CurrentCD[k]
-			if (CDP_newCurrent > 0)
-				CDP_newCurrent -= this.MainLoopCD
-			if (CDP_newCurrent <= 0)
+			if (v <= A_TickCount)
 			{
-				CDP_newCurrent := 0
 				CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k)
 				; If it has been claimed:
 				if (CDP_CurrClaimedState == 2)
@@ -231,7 +226,6 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_CheckedClaimable := this.CheckClaimable(k) ; Check if it is claimable (and when if not)
 					this.Claimable[k] := CDP_CheckedClaimable[1] ; Claimable
 					this.CurrentCD[k] := CDP_CheckedClaimable[2] ; Claimable Cooldown
-					CDP_ApplyNewCurrentCD := false ; Don't change current cooldown from detected
 				}
 				; If it is claimable and the claim state is 0:
 				if (CDP_CurrClaimedState == 0 && this.Claimable[k])
@@ -248,8 +242,6 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_AnyClaimable := true ; And allow the main status to change
 				}
 			}
-			if (CDP_ApplyNewCurrentCD)
-				this.CurrentCD[k] := CDP_newCurrent
 		}
 		if (CDP_AnyClaimable)
 			this.UpdateMainStatus(this.OfflineMessage)
@@ -277,7 +269,7 @@ Class IC_ClaimDailyPlatinum_Component
 				if (this.ArrSize(this.FreeOfferIDs) > 0)
 					CDP_returnArr := [true, 0]
 				else
-					CDP_returnArr := [false, response.offers.time_remaining + this.MainLoopCD]
+					CDP_returnArr := [false, A_TickCount + (response.offers.time_remaining * 1000) + this.SafetyDelay]
 			}
 		}
 		else ; Platinum
@@ -289,11 +281,11 @@ Class IC_ClaimDailyPlatinum_Component
 				if (response.daily_login_details.next_claim_seconds == 0)
 					CDP_returnArr := [true, 0]
 				else
-					CDP_returnArr := [false, response.daily_login_details.next_claim_seconds + this.MainLoopCD]
+					CDP_returnArr := [false, A_TickCount + (response.daily_login_details.next_claim_seconds * 1000) + this.SafetyDelay]
 			}
 		}
 		if (this.ArrSize(CDP_returnArr) == 0)
-			CDP_returnArr := [false, this.StartingCD]
+			CDP_returnArr := [false, A_TickCount + this.StartingCD]
 		return CDP_returnArr
 	}
 	
@@ -306,7 +298,7 @@ Class IC_ClaimDailyPlatinum_Component
 	{
 		this.TimerFunctions := {}
 		fncToCallOnTimer := ObjBindMethod(this, "MainLoop")
-		this.TimerFunctions[fncToCallOnTimer] := this.MainLoopCD * 1000
+		this.TimerFunctions[fncToCallOnTimer] := this.MainLoopCD
 	}
 
 	; Starts the saved timed functions (typically to be started when briv gem farm is started)
@@ -324,7 +316,7 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		for k,v in this.CurrentCD
 		{
-			this.CurrentCD[k] := this.StartingCD
+			this.CurrentCD[k] := A_TickCount + this.StartingCD
 		}
 		this.UpdateGUI()
 	}
@@ -374,7 +366,10 @@ Class IC_ClaimDailyPlatinum_Component
 				return "Disabled."
 			if (this.Claimable[CDP_key])
 				return "Claiming on next offline stack."
-			return this.FmtSecs(this.CurrentCD[CDP_key])
+			; Ceil the remaining milliseconds to the nearest MainLoopCD so it never shows 00m.
+			; Then turn it into seconds to format.
+			CDP_ceilNearestMainLoopCD := Ceil((this.CurrentCD[CDP_key] - A_TickCount) / this.MainLoopCD) * this.MainLoopCD
+			return this.FmtSecs(CDP_ceilNearestMainLoopCD / 1000)
 		}
 		return ""
 	}
