@@ -1,3 +1,5 @@
+ 3  November 2024 - v0.0.8
+ - Annoyingly I've had to add extra checks to the Platinum claim due to CNE being CNE with the next reset time.
  2  November 2024 - v0.0.7
  - Changed the way the timers work to avoid drift.
 23   October 2024 - v0.0.6

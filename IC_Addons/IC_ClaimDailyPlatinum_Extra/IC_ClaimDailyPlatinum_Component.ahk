@@ -278,10 +278,16 @@ Class IC_ClaimDailyPlatinum_Component
 			response := g_ServerCalls.ServerCall("getdailyloginrewards",params)
 			if (IsObject(response) && response.success)
 			{
-				if (response.daily_login_details.next_claim_seconds == 0)
-					CDP_returnArr := [true, 0]
+				CDP_num := 1 << (response.daily_login_details.today_index)
+				if ((response.daily_login_details.rewards_claimed & CDP_num) > 0)
+				{
+					CDP_nextClaimSeconds := response.daily_login_details.next_claim_seconds
+					if (CDP_nextClaimSeconds == 0)
+						CDP_nextClaimSeconds := Mod(response.daily_login_details.next_reset_seconds, 86400)
+					CDP_returnArr := [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
+				}
 				else
-					CDP_returnArr := [false, A_TickCount + (response.daily_login_details.next_claim_seconds * 1000) + this.SafetyDelay]
+					CDP_returnArr := [true, 0]
 			}
 		}
 		if (this.ArrSize(CDP_returnArr) == 0)
