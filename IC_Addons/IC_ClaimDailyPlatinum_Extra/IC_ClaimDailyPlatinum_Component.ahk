@@ -36,7 +36,7 @@ Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time U
 Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumTimer xs%g_CDP_col2x% y+%g_CDP_infoOffy% w%g_CDP_col2w%, 
 
 Gui, ICScriptHub:Font, w700
-Gui, ICScriptHub:Add, GroupBox, x15 ys+%g_CDP_groupboxHeight%+5 Section w500 h%g_CDP_groupboxHeight% vg_CDP_InfoGroupBox, Claim Free Weekly Shop Offers
+Gui, ICScriptHub:Add, GroupBox, x15 ys+%g_CDP_groupboxHeight%+5 Section w500 h%g_CDP_groupboxHeight%, Claim Free Weekly Shop Offers
 Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Checkbox, xs15 ys+%g_CDP_cbDist% vg_CDP_ClaimFreeOffer, Claim Free Weekly Shop Offers?
 Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Free Offers Claimed:
@@ -214,7 +214,7 @@ Class IC_ClaimDailyPlatinum_Component
 				; If it has been claimed:
 				if (CDP_CurrClaimedState == 2)
 				{
-					this.Claimed[k] += 1 ; Increment counter
+					this.IncrementCounter(k)
 					this.Claimable[k] := false ; Set it not claimable
 					this.CurrentCD[k] := 0 ; Set current CD to 0
 					SharedRunData.CDP_ClearClaimedState(k) ; Clear claimed state for StackRestart
@@ -250,7 +250,6 @@ Class IC_ClaimDailyPlatinum_Component
 	
 	CheckClaimable(CDP_key)
 	{
-		CDP_returnArr := []
 		if (CDP_key=="FreeOffer")
 		{
 			this.FreeOfferIDs := []
@@ -267,9 +266,8 @@ Class IC_ClaimDailyPlatinum_Component
 						this.FreeOfferIDs.Push(v.offer_id)
 				}
 				if (this.ArrSize(this.FreeOfferIDs) > 0)
-					CDP_returnArr := [true, 0]
-				else
-					CDP_returnArr := [false, A_TickCount + (response.offers.time_remaining * 1000) + this.SafetyDelay]
+					return [true, 0]
+				return [false, A_TickCount + (response.offers.time_remaining * 1000) + this.SafetyDelay]
 			}
 		}
 		else ; Platinum
@@ -284,15 +282,25 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_nextClaimSeconds := response.daily_login_details.next_claim_seconds
 					if (CDP_nextClaimSeconds == 0)
 						CDP_nextClaimSeconds := Mod(response.daily_login_details.next_reset_seconds, 86400)
-					CDP_returnArr := [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
+					return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
 				}
-				else
-					CDP_returnArr := [true, 0]
+				return [true, 0]
 			}
 		}
-		if (this.ArrSize(CDP_returnArr) == 0)
-			CDP_returnArr := [false, A_TickCount + this.StartingCD]
-		return CDP_returnArr
+		return [false, A_TickCount + this.StartingCD]
+	}
+	
+	IncrementCounter(CDP_key)
+	{
+		if (CDP_key == "Platinum")
+		{
+			this.Claimed[CDP_key] += 1 ; Increment counter
+		}
+		else if (CDP_key == "FreeOffer")
+		{
+			this.Claimed[CDP_key] += this.ArrSize(this.FreeOfferIDs)
+			this.FreeOfferIDs := []
+		}
 	}
 	
 	; =======================

@@ -1,3 +1,5 @@
+ 5  November 2024 - v0.0.9
+ - Fixing a bug where Free Offer IDs wouldn't reset after being claimed.
  3  November 2024 - v0.0.8
  - Annoyingly I've had to add extra checks to the Platinum claim due to CNE being CNE with the next reset time.
  2  November 2024 - v0.0.7
