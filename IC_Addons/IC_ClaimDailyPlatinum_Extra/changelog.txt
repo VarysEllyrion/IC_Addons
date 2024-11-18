@@ -1,3 +1,6 @@
+18  November 2024 - v0.1.1
+ - Hopefully fixing a bug where some bonus chests weren't appearing in the shop data.
+ - Fixing an issue where disabled timers would continue to run.
 18  November 2024 - v0.1.0
  - Adding support to claim the free bonus chests that packs on sale get if you've already bought them. They are referred to by the addon as `Free Premium Pack Bonus Chests`.
  - Added a timer for Platinum Daily Boost expiry if it's active.

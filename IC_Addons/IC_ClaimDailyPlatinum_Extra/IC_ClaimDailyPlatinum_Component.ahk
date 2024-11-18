@@ -146,6 +146,11 @@ Class IC_ClaimDailyPlatinum_Component
 		GuiControl, ICScriptHub:, g_CDP_ClaimPlatinum, % this.Settings["Platinum"]
 		GuiControl, ICScriptHub:, g_CDP_ClaimFreeOffer, % this.Settings["FreeOffer"]
 		GuiControl, ICScriptHub:, g_CDP_ClaimBonusChests, % this.Settings["BonusChests"]
+		for k,v in this.Settings
+		{
+			if (!v)
+				this.CurrentCD[k] := -1
+		}
 		IC_ClaimDailyPlatinum_Functions.UpdateSharedSettings()
 		this.UpdateGUI()
 	}
@@ -164,6 +169,17 @@ Class IC_ClaimDailyPlatinum_Component
 		g_SF.WriteObjectToJSON(IC_ClaimDailyPlatinum_Component.SettingsPath, this.Settings)
 		IC_ClaimDailyPlatinum_Functions.UpdateSharedSettings()
 		;if (!sanityChecked)
+		CDP_LoopCounter := 1
+		for k,v in this.Settings
+		{
+			if (v && this.CurrentCD[k] <= 0)
+			{
+				this.CurrentCD[k] := A_TickCount + (this.MainLoopCD*CDP_LoopCounter)
+				CDP_LoopCounter += 1
+			}
+			if (!v)
+				this.CurrentCD[k] := -1
+		}
 		this.UpdateMainStatus("Saved settings.")
 		this.UpdateGUI()
 	}
@@ -332,7 +348,8 @@ Class IC_ClaimDailyPlatinum_Component
 		{
 			this.BonusChestIDs := []
 			params := this.GetBoilerplate()
-			response := g_ServerCalls.ServerCall("getshop",params)
+			extraParams := params . "&return_all_items_live=1&return_all_items_ever=0&show_hard_currency=1&prioritize_item_category=recommend"
+			response := g_ServerCalls.ServerCall("getshop",extraParams)
 			if (IsObject(response) && response.success)
 			{
 				for k,v in response.package_deals
