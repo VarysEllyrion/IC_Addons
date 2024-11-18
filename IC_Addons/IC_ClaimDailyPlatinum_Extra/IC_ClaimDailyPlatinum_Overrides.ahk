@@ -1,10 +1,11 @@
-global CDP_ClaimableParams := {"Platinum":"","FreeOffer":""}
+global CDP_ClaimableParams := {"Platinum":"","FreeOffer":"","BonusChests":""}
 ; Claimed States:
 ;   0 = Idle - doing nothing.
 ;   1 = Waiting for offline progress in order to send call.
 ;   2 = Call has been sent.
-global CDP_ClaimedState := {"Platinum":0,"FreeOffer":0}
+global CDP_ClaimedState := {"Platinum":0,"FreeOffer":0,"BonusChests":0}
 global CDP_FreeOfferIDs := []
+global CDP_BonusChestIDs := []
 ; global CDP_LogFile := A_LineFile . "\..\logs.json"
 
 class IC_ClaimDailyPlatinum_SharedData_Class extends IC_SharedData_Class
@@ -44,6 +45,12 @@ class IC_ClaimDailyPlatinum_SharedData_Class extends IC_SharedData_Class
 	{
 		if (!this.HasValue(CDP_FreeOfferIDs,CDP_fbID))
 			CDP_FreeOfferIDs.Push(CDP_fbID)
+	}
+	
+	CDP_AddBonusChestIDs(CDP_bcID)
+	{
+		if (!this.HasValue(CDP_BonusChestIDs,CDP_bcID))
+			CDP_BonusChestIDs.Push(CDP_bcID)
 	}
 	
 	HasValue(obj,val)
@@ -95,6 +102,8 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 				this.ClaimDailyPlatinum()
 			if (CDP_ClaimedState["FreeOffer"] == 1)
 				this.ClaimFreeWeeklyOffers()
+			if (CDP_ClaimedState["BonusChests"] == 1)
+				this.ClaimBonusChests()
 			ElapsedTime := A_TickCount - StartTime
 			; END ClaimDailyPlatinum Code Insert
 			chestsCompletedString := " " . this.DoChests(numSilverChests, numGoldChests)
@@ -194,6 +203,33 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 		CDP_ClaimableParams[CDP_key] := ""
 		CDP_ClaimedState[CDP_key] := 2
 		CDP_FreeOfferIDs := []
+	}
+	
+	ClaimBonusChests(CDP_key := "BonusChests")
+	{
+		params := CDP_ClaimableParams[CDP_key]
+		if (params == "")
+		{
+			CDP_ClaimedState[CDP_key] := 0
+			return
+		}
+		for k,v in CDP_BonusChestIDs
+		{
+			extraParams := "&premium_item_id=" . v . params
+			response := g_ServerCall.ServerCall("claimsalebonus",extraParams)
+			if (!IsObject(response) || !response.success)
+			{
+				; server call failed
+				CDP_ClaimableParams[CDP_key] := ""
+				CDP_ClaimedState[CDP_key] := 0
+				CDP_BonusChestIDs := []
+				return
+			}
+		}
+		
+		CDP_ClaimableParams[CDP_key] := ""
+		CDP_ClaimedState[CDP_key] := 2
+		CDP_BonusChestIDs := []
 	}
 
 }

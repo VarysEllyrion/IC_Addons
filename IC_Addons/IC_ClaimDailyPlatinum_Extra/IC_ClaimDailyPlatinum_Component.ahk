@@ -17,32 +17,49 @@ GuiControl,ICScriptHub: +g, g_ClaimDailyPlatinumSave_Clicked, % buttonFunc
 Gui, ICScriptHub:Add, Text, x5 y+10 w130 +Right, Status:
 Gui, ICScriptHub:Add, Text, x145 y+-13 w400 vg_CDP_StatusText, % IC_ClaimDailyPlatinum_Component.WaitingMessage
 
-global g_CDP_cbDist := 25
-global g_CDP_infoDist := 15
-global g_CDP_infoGap := 5
-global g_CDP_col1w := 130
-global g_CDP_col2x := g_CDP_col1w + 20
-global g_CDP_col2w := 200
-global g_CDP_groupboxHeight := 100
-global g_CDP_infoOffy := -13
+GuiControlGet, pos, ICScriptHub:Pos, g_CDP_StatusText
+g_CDP_groupboxHeight := 100
+g_CDP_lineHeight := posH
+g_CDP_cbDist := 25
+g_CDP_infoDist := 15
+g_CDP_infoGap := 5
+g_CDP_col1x := 15
+g_CDP_col1w := 130
+g_CDP_col2x := g_CDP_col1x + g_CDP_col1w + 5
+g_CDP_col2w := 60
+g_CDP_col3x := g_CDP_col2x + g_CDP_col2w + 5
+g_CDP_col3w := g_CDP_col1w
+g_CDP_col4x := g_CDP_col3x + g_CDP_col3w + 5
+g_CDP_col4w := g_CDP_col2w
 
 Gui, ICScriptHub:Font, w700
 Gui, ICScriptHub:Add, GroupBox, x15 y+10 Section w500 h%g_CDP_groupboxHeight%, Claim Daily Platinum
 Gui, ICScriptHub:Font, w400
-Gui, ICScriptHub:Add, Checkbox, xs15 ys+%g_CDP_cbDist% vg_CDP_ClaimPlatinum, Claim Daily Platinum?
-Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Platinum Days Claimed:
-Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumDaysCount xs%g_CDP_col2x% y+%g_CDP_infoOffy% w%g_CDP_col2w%, 
-Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
-Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumTimer xs%g_CDP_col2x% y+%g_CDP_infoOffy% w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimPlatinum xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Daily Platinum?
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Platinum Days Claimed:
+Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumDaysCount xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
+Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Text, vg_CDP_DailyBoostHeader xs%g_CDP_col3x% y+-%g_CDP_lineHeight% w%g_CDP_col3w% +Right, 
+Gui, ICScriptHub:Add, Text, vg_CDP_DailyBoostExpires xs%g_CDP_col4x% y+-%g_CDP_lineHeight% w%g_CDP_col4w%, 
 
 Gui, ICScriptHub:Font, w700
 Gui, ICScriptHub:Add, GroupBox, x15 ys+%g_CDP_groupboxHeight%+5 Section w500 h%g_CDP_groupboxHeight%, Claim Free Weekly Shop Offers
 Gui, ICScriptHub:Font, w400
-Gui, ICScriptHub:Add, Checkbox, xs15 ys+%g_CDP_cbDist% vg_CDP_ClaimFreeOffer, Claim Free Weekly Shop Offers?
-Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Free Offers Claimed:
-Gui, ICScriptHub:Add, Text, vg_CDP_FreeOffersCount xs%g_CDP_col2x% y+%g_CDP_infoOffy%  w%g_CDP_col2w%, 
-Gui, ICScriptHub:Add, Text, xs15 y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
-Gui, ICScriptHub:Add, Text, vg_CDP_FreeOfferTimer xs%g_CDP_col2x% y+%g_CDP_infoOffy% w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimFreeOffer xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Free Weekly Shop Offers?
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Free Offers Claimed:
+Gui, ICScriptHub:Add, Text, vg_CDP_FreeOffersCount xs%g_CDP_col2x% y+-%g_CDP_lineHeight%  w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
+Gui, ICScriptHub:Add, Text, vg_CDP_FreeOfferTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
+
+Gui, ICScriptHub:Font, w700
+Gui, ICScriptHub:Add, GroupBox, x15 ys+%g_CDP_groupboxHeight%+5 Section w500 h%g_CDP_groupboxHeight%, Claim Free Premium Pack Bonus Chests
+Gui, ICScriptHub:Font, w400
+Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimBonusChests xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Free Premium Pack Bonus Chests?
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Bonus Chests Claimed:
+Gui, ICScriptHub:Add, Text, vg_CDP_BonusChestsCount xs%g_CDP_col2x% y+-%g_CDP_lineHeight%  w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
+Gui, ICScriptHub:Add, Text, vg_CDP_BonusChestsTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
 
 if(IsObject(IC_BrivGemFarm_Component))
 {
@@ -60,7 +77,7 @@ Class IC_ClaimDailyPlatinum_Component
 	Injected := false
 	Running := false
 	TimerFunctions := {}
-	DefaultSettings := {"Platinum":true,"FreeOffer":false}
+	DefaultSettings := {"Platinum":true,"FreeOffer":false,"BonusChests":true}
 	Settings := {}
 	; The timer for MainLoop:
 	MainLoopCD := 60000 ; in milliseconds = 1 minute.
@@ -68,13 +85,18 @@ Class IC_ClaimDailyPlatinum_Component
 	StartingCD := 60000 ; in milliseconds = 1 minutes.
 	; The delay between when the server says a timer resets and when to check (for safety):
 	SafetyDelay := 30000 ; in milliseconds = 30 seconds.
+	; Bonus Chest Delay (since sales in the shop don't really have set times that I can find.
+	BonusChestsDelay := 28800000 ; in milliseconds = 8 hours.
 	; The current cooldown for each type:
-	CurrentCD := {"Platinum":0,"FreeOffer":0}
+	CurrentCD := {"Platinum":0,"FreeOffer":0,"BonusChests":0}
 	; The amount of times each type has been claimed:
-	Claimed := {"Platinum":0,"FreeOffer":0}
+	Claimed := {"Platinum":0,"FreeOffer":0,"BonusChests":0}
 	; The flags to tell the timers to pause if the script is waiting for the game to go offline.
-	Claimable := {"Platinum":false,"FreeOffer":false}
+	Claimable := {"Platinum":false,"FreeOffer":false,"BonusChests":false}
 	FreeOfferIDs := []
+	BonusChestIDs := []
+	DailyBoostExpires := 0
+	StaggeredChecks := {"Platinum":1,"FreeOffer":2,"BonusChests":3}
 	
 	UserID := ""
 	UserHash := ""
@@ -123,6 +145,7 @@ Class IC_ClaimDailyPlatinum_Component
 			g_SF.WriteObjectToJSON(IC_ClaimDailyPlatinum_Component.SettingsPath, this.Settings)
 		GuiControl, ICScriptHub:, g_CDP_ClaimPlatinum, % this.Settings["Platinum"]
 		GuiControl, ICScriptHub:, g_CDP_ClaimFreeOffer, % this.Settings["FreeOffer"]
+		GuiControl, ICScriptHub:, g_CDP_ClaimBonusChests, % this.Settings["BonusChests"]
 		IC_ClaimDailyPlatinum_Functions.UpdateSharedSettings()
 		this.UpdateGUI()
 	}
@@ -136,6 +159,7 @@ Class IC_ClaimDailyPlatinum_Component
 		
 		this.Settings["Platinum"] := g_CDP_ClaimPlatinum
 		this.Settings["FreeOffer"] := g_CDP_ClaimFreeOffer
+		this.Settings["BonusChests"] := g_CDP_ClaimBonusChests
 		
 		g_SF.WriteObjectToJSON(IC_ClaimDailyPlatinum_Component.SettingsPath, this.Settings)
 		IC_ClaimDailyPlatinum_Functions.UpdateSharedSettings()
@@ -214,7 +238,13 @@ Class IC_ClaimDailyPlatinum_Component
 				; If it has been claimed:
 				if (CDP_CurrClaimedState == 2)
 				{
-					this.IncrementCounter(k)
+					; Increment claimed counter:
+					if (k == "FreeOffer")
+						this.Claimed[k] += this.ArrSize(this.FreeOfferIDs)
+					else if (k == "BonusChests")
+						this.Claimed[k] += this.ArrSize(this.BonusChestIDs)
+					else
+						this.Claimed[k] += 1
 					this.Claimable[k] := false ; Set it not claimable
 					this.CurrentCD[k] := 0 ; Set current CD to 0
 					SharedRunData.CDP_ClearClaimedState(k) ; Clear claimed state for StackRestart
@@ -239,6 +269,13 @@ Class IC_ClaimDailyPlatinum_Component
 							SharedRunData.CDP_AddFreebieOfferIDs(b)
 						}
 					}
+					if (k == "BonusChests")
+					{
+						for l,b in this.BonusChestIDs
+						{
+							SharedRunData.CDP_AddBonusChestIDs(b)
+						}
+					}
 					CDP_AnyClaimable := true ; And allow the main status to change
 				}
 			}
@@ -250,11 +287,32 @@ Class IC_ClaimDailyPlatinum_Component
 	
 	CheckClaimable(CDP_key)
 	{
-		if (CDP_key=="FreeOffer")
+		if (CDP_key == "Platinum")
+		{
+			params := this.GetBoilerplate()
+			response := g_ServerCalls.ServerCall("getdailyloginrewards",params)
+			if (IsObject(response) && response.success)
+			{
+				CDP_num := 1 << (response.daily_login_details.today_index)
+				if (response.daily_login_details.premium_active && response.daily_login_details.premium_expire_seconds > 0)
+					this.DailyBoostExpires := response.daily_login_details.premium_expire_seconds  * 1000
+				else
+					this.DailyBoostExpires := 0
+				if ((response.daily_login_details.rewards_claimed & CDP_num) > 0)
+				{
+					CDP_nextClaimSeconds := response.daily_login_details.next_claim_seconds
+					if (CDP_nextClaimSeconds == 0)
+						CDP_nextClaimSeconds := Mod(response.daily_login_details.next_reset_seconds, 86400)
+					return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
+				}
+				return [true, 0]
+			}
+		}
+		else if (CDP_key == "FreeOffer")
 		{
 			this.FreeOfferIDs := []
 			params := this.GetBoilerplate()
-			response := g_ServerCalls.ServerCall("revealalacarteoffers",params)
+			g_ServerCalls.ServerCall("revealalacarteoffers",params)
 			response := g_ServerCalls.ServerCall("getalacarteoffers",params)
 			if (IsObject(response) && response.success)
 			{
@@ -270,37 +328,24 @@ Class IC_ClaimDailyPlatinum_Component
 				return [false, A_TickCount + (response.offers.time_remaining * 1000) + this.SafetyDelay]
 			}
 		}
-		else ; Platinum
+		else if (CDP_key == "BonusChests")
 		{
+			this.BonusChestIDs := []
 			params := this.GetBoilerplate()
-			response := g_ServerCalls.ServerCall("getdailyloginrewards",params)
+			response := g_ServerCalls.ServerCall("getshop",params)
 			if (IsObject(response) && response.success)
 			{
-				CDP_num := 1 << (response.daily_login_details.today_index)
-				if ((response.daily_login_details.rewards_claimed & CDP_num) > 0)
+				for k,v in response.package_deals
 				{
-					CDP_nextClaimSeconds := response.daily_login_details.next_claim_seconds
-					if (CDP_nextClaimSeconds == 0)
-						CDP_nextClaimSeconds := Mod(response.daily_login_details.next_reset_seconds, 86400)
-					return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
+					if (v.bonus_status == 0)
+						this.BonusChestIDs.Push(v.item_id)
 				}
-				return [true, 0]
+				if (this.ArrSize(this.FreeOfferIDs) > 0)
+					return [true, 0]
 			}
+			return [false, A_TickCount + this.BonusChestsDelay]
 		}
 		return [false, A_TickCount + this.StartingCD]
-	}
-	
-	IncrementCounter(CDP_key)
-	{
-		if (CDP_key == "Platinum")
-		{
-			this.Claimed[CDP_key] += 1 ; Increment counter
-		}
-		else if (CDP_key == "FreeOffer")
-		{
-			this.Claimed[CDP_key] += this.ArrSize(this.FreeOfferIDs)
-			this.FreeOfferIDs := []
-		}
 	}
 	
 	; =======================
@@ -330,7 +375,7 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		for k,v in this.CurrentCD
 		{
-			this.CurrentCD[k] := A_TickCount + this.StartingCD
+			this.CurrentCD[k] := A_TickCount + (this.StartingCD * this.StaggeredChecks[k])
 		}
 		this.UpdateGUI()
 	}
@@ -367,8 +412,12 @@ Class IC_ClaimDailyPlatinum_Component
 	{
 		GuiControl, ICScriptHub:, g_CDP_PlatinumTimer, % this.ProduceGUITimerMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_FreeOfferTimer, % this.ProduceGUITimerMessage("FreeOffer")
+		GuiControl, ICScriptHub:, g_CDP_BonusChestsTimer, % this.ProduceGUITimerMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_PlatinumDaysCount, % this.ProduceGUIClaimedMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_FreeOffersCount, % this.ProduceGUIClaimedMessage("FreeOffer")
+		GuiControl, ICScriptHub:, g_CDP_BonusChestsCount, % this.ProduceGUIClaimedMessage("BonusChests")
+		GuiControl, ICScriptHub:, g_CDP_DailyBoostHeader, % (this.DailyBoostExpires > 0 ? "Daily Boost Expires:" : "")
+		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.DailyBoostExpires / 1000) : "")
 		Gui, Submit, NoHide
 	}
 	

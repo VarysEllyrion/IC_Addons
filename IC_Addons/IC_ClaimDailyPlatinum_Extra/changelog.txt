@@ -1,3 +1,7 @@
+18  November 2024 - v0.1.0
+ - Adding support to claim the free bonus chests that packs on sale get if you've already bought them. They are referred to by the addon as `Free Premium Pack Bonus Chests`.
+ - Added a timer for Platinum Daily Boost expiry if it's active.
+ - Staggered the starting check times for each claim so that it doesn't spam the server after 1 minute.
  5  November 2024 - v0.0.9
  - Fixing a bug where Free Offer IDs wouldn't reset after being claimed.
  3  November 2024 - v0.0.8
