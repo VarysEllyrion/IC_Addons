@@ -1,3 +1,6 @@
+19  November 2024 - v0.1.2
+ - Fixed a bug where bonus chests weren't being added to the list of bonuses to claim because of a stupid copy-paste issue.
+ - Fixed a bug where claiming message would be visually cut-off.
 18  November 2024 - v0.1.1
  - Hopefully fixing a bug where some bonus chests weren't appearing in the shop data.
  - Fixing an issue where disabled timers would continue to run.

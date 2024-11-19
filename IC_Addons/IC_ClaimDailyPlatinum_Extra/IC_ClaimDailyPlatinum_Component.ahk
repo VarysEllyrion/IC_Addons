@@ -26,11 +26,11 @@ g_CDP_infoGap := 5
 g_CDP_col1x := 15
 g_CDP_col1w := 130
 g_CDP_col2x := g_CDP_col1x + g_CDP_col1w + 5
-g_CDP_col2w := 60
-g_CDP_col3x := g_CDP_col2x + g_CDP_col2w + 5
+g_CDP_col2w := 260
+g_CDP_col3x := g_CDP_col2x + g_CDP_col2w + 5 - 200
 g_CDP_col3w := g_CDP_col1w
 g_CDP_col4x := g_CDP_col3x + g_CDP_col3w + 5
-g_CDP_col4w := g_CDP_col2w
+g_CDP_col4w := g_CDP_col2w - 200
 
 Gui, ICScriptHub:Font, w700
 Gui, ICScriptHub:Add, GroupBox, x15 y+10 Section w500 h%g_CDP_groupboxHeight%, Claim Daily Platinum
@@ -38,10 +38,10 @@ Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimPlatinum xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Daily Platinum?
 Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Platinum Days Claimed:
 Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumDaysCount xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
-Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
-Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
 Gui, ICScriptHub:Add, Text, vg_CDP_DailyBoostHeader xs%g_CDP_col3x% y+-%g_CDP_lineHeight% w%g_CDP_col3w% +Right, 
 Gui, ICScriptHub:Add, Text, vg_CDP_DailyBoostExpires xs%g_CDP_col4x% y+-%g_CDP_lineHeight% w%g_CDP_col4w%, 
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
+Gui, ICScriptHub:Add, Text, vg_CDP_PlatinumTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
 
 Gui, ICScriptHub:Font, w700
 Gui, ICScriptHub:Add, GroupBox, x15 ys+%g_CDP_groupboxHeight%+5 Section w500 h%g_CDP_groupboxHeight%, Claim Free Weekly Shop Offers
@@ -354,10 +354,10 @@ Class IC_ClaimDailyPlatinum_Component
 			{
 				for k,v in response.package_deals
 				{
-					if (v.bonus_status == 0)
+					if (v.bonus_status == "0")
 						this.BonusChestIDs.Push(v.item_id)
 				}
-				if (this.ArrSize(this.FreeOfferIDs) > 0)
+				if (this.ArrSize(this.BonusChestIDs) > 0)
 					return [true, 0]
 			}
 			return [false, A_TickCount + this.BonusChestsDelay]
