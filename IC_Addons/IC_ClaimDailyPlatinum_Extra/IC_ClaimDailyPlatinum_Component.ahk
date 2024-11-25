@@ -30,7 +30,7 @@ g_CDP_col2w := 260
 g_CDP_col3x := g_CDP_col2x + g_CDP_col2w + 5 - 200
 g_CDP_col3w := g_CDP_col1w
 g_CDP_col4x := g_CDP_col3x + g_CDP_col3w + 5
-g_CDP_col4w := g_CDP_col2w - 200
+g_CDP_col4w := g_CDP_col2w - 130
 
 Gui, ICScriptHub:Font, w700
 Gui, ICScriptHub:Add, GroupBox, x15 y+10 Section w500 h%g_CDP_groupboxHeight%, Claim Daily Platinum
