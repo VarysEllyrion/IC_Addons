@@ -311,7 +311,7 @@ Class IC_ClaimDailyPlatinum_Component
 			{
 				CDP_num := 1 << (response.daily_login_details.today_index)
 				if (response.daily_login_details.premium_active && response.daily_login_details.premium_expire_seconds > 0)
-					this.DailyBoostExpires := response.daily_login_details.premium_expire_seconds
+					this.DailyBoostExpires := A_TickCount + (response.daily_login_details.premium_expire_seconds * 1000)
 				else
 					this.DailyBoostExpires := 0
 				if ((response.daily_login_details.rewards_claimed & CDP_num) > 0)
@@ -434,7 +434,7 @@ Class IC_ClaimDailyPlatinum_Component
 		GuiControl, ICScriptHub:, g_CDP_FreeOffersCount, % this.ProduceGUIClaimedMessage("FreeOffer")
 		GuiControl, ICScriptHub:, g_CDP_BonusChestsCount, % this.ProduceGUIClaimedMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostHeader, % (this.DailyBoostExpires > 0 ? "Daily Boost Expires:" : "")
-		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.DailyBoostExpires) : "")
+		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.DailyBoostExpires)) : "")
 		Gui, Submit, NoHide
 	}
 	
@@ -448,8 +448,7 @@ Class IC_ClaimDailyPlatinum_Component
 				return "Claiming on next offline stack."
 			; Ceil the remaining milliseconds to the nearest MainLoopCD so it never shows 00m.
 			; Then turn it into seconds to format.
-			CDP_ceilNearestMainLoopCD := Ceil((this.CurrentCD[CDP_key] - A_TickCount) / this.MainLoopCD) * this.MainLoopCD
-			return this.FmtSecs(CDP_ceilNearestMainLoopCD / 1000)
+			return this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.CurrentCD[CDP_key]))
 		}
 		return ""
 	}
@@ -473,6 +472,11 @@ Class IC_ClaimDailyPlatinum_Component
 		fmtTime := RegExReplace(fmtTime, "m)^0h ", "")
 		fmtTime := Trim(fmtTime)
 		return fmtTime
+	}
+	
+	CeilMillisecondsToNearestMainLoopCDSeconds(CDP_timer)
+	{
+		return (Ceil((CDP_timer - A_TickCount) / this.MainLoopCD) * this.MainLoopCD) / 1000
 	}
 	
 	ArrSize(arr)
