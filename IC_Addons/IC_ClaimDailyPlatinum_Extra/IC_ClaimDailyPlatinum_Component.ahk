@@ -311,7 +311,7 @@ Class IC_ClaimDailyPlatinum_Component
 			{
 				CDP_num := 1 << (response.daily_login_details.today_index)
 				if (response.daily_login_details.premium_active && response.daily_login_details.premium_expire_seconds > 0)
-					this.DailyBoostExpires := response.daily_login_details.premium_expire_seconds  * 1000
+					this.DailyBoostExpires := response.daily_login_details.premium_expire_seconds
 				else
 					this.DailyBoostExpires := 0
 				if ((response.daily_login_details.rewards_claimed & CDP_num) > 0)
@@ -434,7 +434,7 @@ Class IC_ClaimDailyPlatinum_Component
 		GuiControl, ICScriptHub:, g_CDP_FreeOffersCount, % this.ProduceGUIClaimedMessage("FreeOffer")
 		GuiControl, ICScriptHub:, g_CDP_BonusChestsCount, % this.ProduceGUIClaimedMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostHeader, % (this.DailyBoostExpires > 0 ? "Daily Boost Expires:" : "")
-		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.DailyBoostExpires / 1000) : "")
+		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.DailyBoostExpires) : "")
 		Gui, Submit, NoHide
 	}
 	
@@ -469,7 +469,7 @@ Class IC_ClaimDailyPlatinum_Component
 		local D, H, M, HH, Q:=60, R:=3600, S:=86400
 		T := Round(T)
 		fmtTime := Format(Fmt, D:=T//S, H:=(T:=T-D*S)//R, M:=(T:=T-H*R)//Q, T-M*Q, HH:=D*24+H, HH*Q+M)
-		fmtTime := RegExReplace(fmtTime, "m)0d ", "")
+		fmtTime := RegExReplace(fmtTime, "m)^0d ", "")
 		fmtTime := RegExReplace(fmtTime, "m)^0h ", "")
 		fmtTime := Trim(fmtTime)
 		return fmtTime

@@ -1,3 +1,5 @@
+25  November 2024 - v0.1.3
+ - Fixed a minor display issue with the Platinum Daily Boost timer.
 19  November 2024 - v0.1.2
  - Fixed a bug where bonus chests weren't being added to the list of bonuses to claim because of a stupid copy-paste issue.
  - Fixed a bug where claiming message would be visually cut-off.
