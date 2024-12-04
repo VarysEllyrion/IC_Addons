@@ -1,3 +1,5 @@
+04  December 2024 - v0.2.0
+ - Adding support to claim celebration rewards.
 25  November 2024 - v0.1.3
  - Fixed a minor display issue with the Platinum Daily Boost timer.
  - Fixed Daily Boost Timer so it actually ticks down between checks.

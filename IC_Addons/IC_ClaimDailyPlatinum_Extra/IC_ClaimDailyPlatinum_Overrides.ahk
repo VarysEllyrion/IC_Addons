@@ -3,9 +3,10 @@ global CDP_ClaimableParams := {"Platinum":"","FreeOffer":"","BonusChests":""}
 ;   0 = Idle - doing nothing.
 ;   1 = Waiting for offline progress in order to send call.
 ;   2 = Call has been sent.
-global CDP_ClaimedState := {"Platinum":0,"FreeOffer":0,"BonusChests":0}
+global CDP_ClaimedState := {"Platinum":0,"FreeOffer":0,"BonusChests":0,"Celebrations":0}
 global CDP_FreeOfferIDs := []
 global CDP_BonusChestIDs := []
+global CDP_CelebrityCodes := []
 ; global CDP_LogFile := A_LineFile . "\..\logs.json"
 
 class IC_ClaimDailyPlatinum_SharedData_Class extends IC_SharedData_Class
@@ -53,6 +54,12 @@ class IC_ClaimDailyPlatinum_SharedData_Class extends IC_SharedData_Class
 			CDP_BonusChestIDs.Push(CDP_bcID)
 	}
 	
+	CDP_AddCelebrationCodes(CDP_ccID)
+	{
+		if (!this.HasValue(CDP_CelebrityCodes,CDP_ccID))
+			CDP_CelebrityCodes.Push(CDP_ccID)
+	}
+	
 	HasValue(obj,val)
 	{
 		for k,v in obj
@@ -97,13 +104,14 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 			StartTime := A_TickCount
 			ElapsedTime := 0
 			; START ClaimDailyPlatinum Code Insert
-			FormatTime, CurrentTime, , yyyy-MM-dd HH:mm:ss
 			if (CDP_ClaimedState["Platinum"] == 1)
 				this.ClaimDailyPlatinum()
 			if (CDP_ClaimedState["FreeOffer"] == 1)
 				this.ClaimFreeWeeklyOffers()
 			if (CDP_ClaimedState["BonusChests"] == 1)
 				this.ClaimBonusChests()
+			if (CDP_ClaimedState["Celebrations"] == 1)
+				this.ClaimCelebrationCodes()
 			ElapsedTime := A_TickCount - StartTime
 			; END ClaimDailyPlatinum Code Insert
 			chestsCompletedString := " " . this.DoChests(numSilverChests, numGoldChests)
@@ -230,6 +238,33 @@ class IC_ClaimDailyPlatinum_BrivGemFarm_Class extends IC_BrivSharedFunctions_Cla
 		CDP_ClaimableParams[CDP_key] := ""
 		CDP_ClaimedState[CDP_key] := 2
 		CDP_BonusChestIDs := []
+	}
+	
+	ClaimCelebrationCodes(CDP_key := "Celebrations")
+	{
+		params := CDP_ClaimableParams[CDP_key]
+		if (params == "")
+		{
+			CDP_ClaimedState[CDP_key] := 0
+			return
+		}
+		for k,v in CDP_CelebrityCodes
+		{
+			extraParams := "&code=" . v . params
+			response := g_ServerCall.ServerCall("redeemcoupon",extraParams)
+			if (!IsObject(response) || !response.success)
+			{
+				; server call failed
+				CDP_ClaimableParams[CDP_key] := ""
+				CDP_ClaimedState[CDP_key] := 0
+				CDP_CelebrityCodes := []
+				return
+			}
+		}
+		
+		CDP_ClaimableParams[CDP_key] := ""
+		CDP_ClaimedState[CDP_key] := 2
+		CDP_CelebrityCodes := []
 	}
 
 }

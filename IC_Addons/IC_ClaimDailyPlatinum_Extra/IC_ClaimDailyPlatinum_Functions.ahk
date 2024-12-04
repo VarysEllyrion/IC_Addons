@@ -19,5 +19,15 @@ class IC_ClaimDailyPlatinum_Functions
 			return true
 		return false
 	}
+
+	GetAllRegexMatches(haystack,needle) {
+		matches := []
+		while n := RegExMatch(haystack,"O)" needle,match,n?n+1:1) { ;loop through all matches
+			index := matches.length()+1
+			loop % match.count() ;check how many subpatterns were found, add them to the array
+				matches.push(match.value(a_index))
+		}
+		return matches
+	}
 	
 }
