@@ -387,6 +387,7 @@ Class IC_ClaimDailyPlatinum_Component
 			webRequestLog := ""
 			FileRead, webRequestLog, %wrlLoc%
 			containsOneToGo := false
+			CDP_nextClaimSeconds := 9999999
 			if (InStr(webRequestLog, """dialog"":"))
 			{
 				currMatches := IC_ClaimDailyPlatinum_Functions.GetAllRegexMatches(webRequestLog, """dialog"": ?""([^""]+)""")
@@ -399,9 +400,9 @@ Class IC_ClaimDailyPlatinum_Component
 					{
 						for l,b in response.dialog_data.elements
 						{
-							if (b.type != "button")
-								continue
-							if (InStr(b.text, "claim"))
+							if (b.timer != "" && b.timer < CDP_nextClaimSeconds)
+								CDP_nextClaimSeconds := b.timer
+							if (b.type == "button" && InStr(b.text, "claim"))
 							{
 								for j,c in b.actions
 								{
@@ -423,7 +424,10 @@ Class IC_ClaimDailyPlatinum_Component
 					this.CheckCelebrationsAgain := true
 				return [true, 0]
 			}
-			return [false, A_TickCount + this.NoTimerDelay]
+			if (CDP_nextClaimSeconds < 9999999)
+				return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
+			else
+				return [false, A_TickCount + this.NoTimerDelay]
 		}
 		return [false, A_TickCount + this.StartingCD]
 	}

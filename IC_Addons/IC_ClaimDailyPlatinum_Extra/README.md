@@ -27,7 +27,7 @@ The second section determines whether the script will try to claim any free week
 
 The timer for it is initialised to check 2 minutes after starting the Gem Farm script - and it will check again whenever the server says it will be ready (+30 seconds for safety).
 
-This setting is off by default because some people may occasionally wish to reroll their offers.
+This setting is on by default.
 
 ___
 
@@ -36,5 +36,15 @@ ___
 The third option will try to claim the bonus chests available when a premium pack that you've already bought goes on sale.
 
 The timer for it is initialised to check 3 minutes after starting the Gem Farm Script - and it will check again every 8 hours.
+
+This setting is on by default.
+
+___
+
+## Claim Celebration Rewards
+
+The fourth option will try to claim rewards available during a Celebration event such as the seasonal celebrations - where you get one chest per day and an extra special one if you claim at least four days.
+
+The timer for it is initialised to check 4 minutes after starting the Gem Farm Script. If the addon can see there is a celebration running and can pull a timer from it - it will check when the next day will be claimable. Otherwise it checks every 8 hours.
 
 This setting is on by default.

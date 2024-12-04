@@ -1,3 +1,5 @@
+04  December 2024 - v0.2.1
+ - Celebration rewards now have a proper timer (when a proper timer exists - falls back to 8 hours if not).
 04  December 2024 - v0.2.0
  - Adding support to claim celebration rewards.
 25  November 2024 - v0.1.3
