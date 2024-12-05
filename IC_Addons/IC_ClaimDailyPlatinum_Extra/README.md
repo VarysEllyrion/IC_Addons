@@ -1,6 +1,10 @@
 # Claim Daily Platinum Addon
 
-This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to. It can also claim free weekly shop offers and bonus chests from premium packs on sale that you've already bought.
+This is a very simple AddOn that can claim your free daily Platinum automagically so you don't have to.  
+It can also claim:
+- Free weekly shop offers
+- Bonus chests from premium packs on sale that you've already bought
+- Celebration rewards
 
 ___
 
