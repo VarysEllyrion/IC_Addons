@@ -1,3 +1,5 @@
+18  December 2024 - v0.2.2
+ - Slight bug fix to Celebration rewards code that will allow it to claim multiple codes for the same day - if such a thing ever occurs (it probably won't).
 04  December 2024 - v0.2.1
  - Celebration rewards now have a proper timer (when a proper timer exists - falls back to 8 hours if not).
 04  December 2024 - v0.2.0

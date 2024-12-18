@@ -406,10 +406,8 @@ Class IC_ClaimDailyPlatinum_Component
 							{
 								for j,c in b.actions
 								{
-									if (c.action != "redeem_code")
-										continue
-									this.CelebrationCodes.Push(c.params.code)
-									break
+									if (c.action == "redeem_code")
+										this.CelebrationCodes.Push(c.params.code)
 								}
 							}
 							if (InStr(b.text, "1 to go"))
