@@ -328,7 +328,7 @@ Class IC_GameSettingsFix_Component
 		g_MouseToolTips[ConsolePortraitsTT] := "Settings -> Interface -> Console UI Portraits:`nDetermines whether the portraits for the champions on the bench are the`ncreepy ones that stare into your soul or not."
 		g_MouseToolTips[NarrowBenchTT] := "Settings -> Interface -> Narrow Bench Boxes:`nDetermines whether you can see all champions on the bench on low`nresolutions or not."
 		g_MouseToolTips[ShowAllBoxesTT] := "Settings -> Interface -> Show All Bench Seats:`nDetermines whether you can see all champions on the bench even`nif you can't afford to unlock them yet."
-		g_MouseToolTips[NeverOpenActiveTasks] := "Settings -> General -> Never Open Active Tasks`nDetermines whether the Active Tasks menu will pop up once per day."
+		g_MouseToolTips[NeverOpenActiveTasksTT] := "Settings -> General -> Never Open Active Tasks`nDetermines whether the Active Tasks menu will pop up once per day."
 	}
 	
 	SaveProfile()
