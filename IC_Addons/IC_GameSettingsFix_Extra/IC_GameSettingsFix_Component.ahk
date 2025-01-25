@@ -44,7 +44,7 @@ buttonFunc := ObjBindMethod(g_GameSettingsFix, "DeleteProfile")
 GuiControl,ICScriptHub: +g, g_GameSettingsFixDeleteProfile_Clicked, % buttonFunc
 
 Gui, ICScriptHub:Font, w700
-Gui, ICScriptHub:Add, GroupBox, x15 ys+60 Section w500 h320, Settings
+Gui, ICScriptHub:Add, GroupBox, x15 ys+60 Section w500 h345, Settings
 Gui, ICScriptHub:Add, Text, xs%g_GSF_col1x% ys%g_GSF_ypos% w%g_GSF_col1w% +Right, Setting
 Gui, ICScriptHub:Add, Text, xs%g_GSF_col2x% ys%g_GSF_ypos% w%g_GSF_col2w%, Value
 Gui, ICScriptHub:Add, Text, xs%g_GSF_col3x% ys%g_GSF_ypos% w%g_GSF_col3w%, Recommended
@@ -101,9 +101,13 @@ g_GSF_ypos += 25
 Gui, ICScriptHub:Add, Text, xs%g_GSF_col1x% ys%g_GSF_ypos% w%g_GSF_col1w% +Right vg_GSF_ShowAllHeroBoxesH, ShowAllHeroBoxes:
 Gui, ICScriptHub:Add, Checkbox, xs%g_GSF_col2x% y+-13 vg_GSF_ShowAllHeroBoxes,
 Gui, ICScriptHub:Add, Text, xs%g_GSF_col3x% y+-13 w%g_GSF_col3w%, Personal Preference
+g_GSF_ypos += 25
+Gui, ICScriptHub:Add, Text, xs%g_GSF_col1x% ys%g_GSF_ypos% w%g_GSF_col1w% +Right vg_GSF_NeverOpenActiveTasksH, NeverOpenActiveTasks:
+Gui, ICScriptHub:Add, Checkbox, xs%g_GSF_col2x% y+-13 vg_GSF_NeverOpenActiveTasks,
+Gui, ICScriptHub:Add, Text, xs%g_GSF_col3x% y+-13 w%g_GSF_col3w%, Checked
 
 Gui, ICScriptHub:Font, w700
-Gui, ICScriptHub:Add, GroupBox, x15 ys+325 Section w500 h140, Info
+Gui, ICScriptHub:Add, GroupBox, x15 ys+350 Section w500 h140, Info
 Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Text, xs15 ys+30 w125, Num Times Fixed Settings:
 Gui, ICScriptHub:Add, Text, xs150 y+-13 w200 vg_GSF_NumTimesFixed, 0
@@ -142,7 +146,7 @@ Class IC_GameSettingsFix_Component
 
 	Injected := false
 	TimerFunctions := {}
-	DefaultSettings := {"TargetFramerate":600,"PercentOfParticlesSpawned":0,"resolution_x":1280,"resolution_y":720,"resolution_fullscreen":false,"ReduceFramerateWhenNotInFocus":false,"LevelupAmountIndex":4,"UseConsolePortraits":false,"FormationSaveIncludeFeatsCheck":false,"NarrowHeroBoxes":true,"ShowAllHeroBoxes":true,"CurrentProfile":""}
+	DefaultSettings := {"TargetFramerate":600,"PercentOfParticlesSpawned":0,"resolution_x":1280,"resolution_y":720,"resolution_fullscreen":false,"ReduceFramerateWhenNotInFocus":false,"LevelupAmountIndex":4,"UseConsolePortraits":false,"FormationSaveIncludeFeatsCheck":false,"NarrowHeroBoxes":true,"ShowAllHeroBoxes":true,"NeverOpenActiveTasks":true,"CurrentProfile":""}
 	Settings := {}
 	GameSettingsFileLocation := ""
 	InstanceID := ""
@@ -208,6 +212,7 @@ Class IC_GameSettingsFix_Component
 		GuiControl, ICScriptHub:, g_GSF_FormationSaveIncludeFeatsCheck, % this.Settings["FormationSaveIncludeFeatsCheck"]
 		GuiControl, ICScriptHub:, g_GSF_NarrowHeroBoxes, % this.Settings["NarrowHeroBoxes"]
 		GuiControl, ICScriptHub:, g_GSF_ShowAllHeroBoxes, % this.Settings["ShowAllHeroBoxes"]
+		GuiControl, ICScriptHub:, g_GSF_NeverOpenActiveTasks, % this.Settings["NeverOpenActiveTasks"]
 		this.CurrentProfile := this.Settings["CurrentProfile"]
 		IC_GameSettingsFix_Functions.UpdateSharedSettings()
 	}
@@ -229,6 +234,7 @@ Class IC_GameSettingsFix_Component
 		this.Settings["FormationSaveIncludeFeatsCheck"] := g_GSF_FormationSaveIncludeFeatsCheck
 		this.Settings["NarrowHeroBoxes"] := g_GSF_NarrowHeroBoxes
 		this.Settings["ShowAllHeroBoxes"] := g_GSF_ShowAllHeroBoxes
+		this.Settings["NeverOpenActiveTasks"] := g_GSF_NeverOpenActiveTasks
 		this.Settings["CurrentProfile"] := this.CurrentProfile
 		g_SF.WriteObjectToJSON(this.SettingsPath, this.Settings)
 		IC_GameSettingsFix_Functions.UpdateSharedSettings()
@@ -310,6 +316,7 @@ Class IC_GameSettingsFix_Component
 		ConsolePortraitsTT := GUIFunctions.GetToolTipTarget("g_GSF_UseConsolePortraitsH")
 		NarrowBenchTT := GUIFunctions.GetToolTipTarget("g_GSF_NarrowHeroBoxesH")
 		ShowAllBoxesTT := GUIFunctions.GetToolTipTarget("g_GSF_ShowAllHeroBoxesH")
+		NeverOpenActiveTasksTT := GUIFunctions.GetToolTipTarget("g_GSF_NeverOpenActiveTasksH")
 		g_MouseToolTips[TargetFramerateTT] := "Settings -> Graphics -> Target Framerate:`nThis sets the upper-limit for FPS for the game."
 		g_MouseToolTips[ParticlesTT] := "Settings -> Graphics -> Particle Amount:`nThe graphics for some abilities can create other little graphical effects`ncalled particles. This sets the proportion of them that can be created."
 		g_MouseToolTips[ResolutionXTT] := "Settings -> Display -> Resolution:`nThe width of your game window in pixels."
@@ -321,6 +328,7 @@ Class IC_GameSettingsFix_Component
 		g_MouseToolTips[ConsolePortraitsTT] := "Settings -> Interface -> Console UI Portraits:`nDetermines whether the portraits for the champions on the bench are the`ncreepy ones that stare into your soul or not."
 		g_MouseToolTips[NarrowBenchTT] := "Settings -> Interface -> Narrow Bench Boxes:`nDetermines whether you can see all champions on the bench on low`nresolutions or not."
 		g_MouseToolTips[ShowAllBoxesTT] := "Settings -> Interface -> Show All Bench Seats:`nDetermines whether you can see all champions on the bench even`nif you can't afford to unlock them yet."
+		g_MouseToolTips[NeverOpenActiveTasks] := "Settings -> General -> Never Open Active Tasks`nDetermines whether the Active Tasks menu will pop up once per day."
 	}
 	
 	SaveProfile()
