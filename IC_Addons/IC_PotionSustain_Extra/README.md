@@ -123,12 +123,12 @@ This bracket will always use a small potion and cycle between the other three po
 
 This bracket will use one of any potion size and cycle between them all.
 
-| Priority | Alternatives | Uptime | Speed<br>No Shandie | Speed<br>Shandie |
-|--:|---|--:|--:|--:|
-| 1 | Large | 0%+ | x4.64 | x6.96 |
-| 2 | Huge | 0%+ | x5.67 | x8.51 |
-| 3 | Medium | 0%+ | x3.61 | x5.41 |
-| 4 | Small | 0%+ | x2.58 | x3.87 |
+| Priority | Alternatives | Speed<br>No Shandie | Speed<br>Shandie |
+|--:|---|--:|--:|
+| 1 | Large | x4.64 | x6.96 |
+| 2 | Huge | x5.67 | x8.51 |
+| 3 | Medium | x3.61 | x5.41 |
+| 4 | Small | x2.58 | x3.87 |
 
 ___
 
