@@ -100,35 +100,35 @@ For the time being it's extremely simplistic - and might not be good for everyon
 
 ### Mediums + Others
 
-z1185 (or z895 with Gem Hunter) can permanently sustain medium potions - if the script can buy Silvers occasionally to sustain smalls. (Which is why Sustain Smalls is not optional.)
+This bracket will always use a medium potion and cycle between the other three potion sizes.
 
-| Alternatives | Uptime | Speed<br>No Shandie | Speed<br>Shandie |
-|---|--:|--:|--:|
-| Medium + Large | 40.09%+ | x10 | x10 |
-| Medium + Huge | 5.02%+ | x10 | x10 |
-| Medium + Small | 100% | x5.64 | x8.46 |
+| Priority | Alternatives | Speed<br>No Shandie | Speed<br>Shandie |
+|--:|---|--:|--:|
+| 1 | Medium + Large | x10 | x10 |
+| 2 | Medium + Huge |  x10 | x10 |
+| 3 | Medium + Small | x5.64 | x8.46 |
 
 ### Smalls + Others
 
-z665 (or z480 with Gem Hunter) can permanently sustain small potions.
+This bracket will always use a small potion and cycle between the other three potion sizes.
 
-| Alternatives | Uptime | Speed<br>No Shandie | Speed<br>Shandie |
-|---|--:|--:|--:|
-| Small + Large | 23.27%+ | x7.25 | x10 |
-| Small + Huge | 0.82%+ | x8.86 | x10 |
-| Small + Medium | 58.17%+ | x5.64 | x8.46 |
-| Small only | 100% | x2.58 | x3.87 |
+| Priority | Alternatives | Speed<br>No Shandie | Speed<br>Shandie |
+|--:|---|--:|--:|
+| 1 | Small + Large | x7.25 | x10 |
+| 2 | Small + Huge | x8.86 | x10 |
+| 3 | Small + Medium | x5.64 | x8.46 |
+| 4 | Small only | x2.58 | x3.87 |
 
 ### Anything Available
 
-Below z665 (or z480 with Gem Hunter) you can't permanently sustain any potion. Because of this it will use 1 potion at a time and alternate all 4 types.
+This bracket will use one of any potion size and cycle between them all.
 
-| Alternatives | Uptime | Speed<br>No Shandie | Speed<br>Shandie |
-|---|--:|--:|--:|
-| Large | 0%+ | x4.64 | x6.96 |
-| Huge | 0%+ | x5.67 | x8.51 |
-| Medium | 0%+ | x3.61 | x5.41 |
-| Small | 0%+ | x2.58 | x3.87 |
+| Priority | Alternatives | Uptime | Speed<br>No Shandie | Speed<br>Shandie |
+|--:|---|--:|--:|--:|
+| 1 | Large | 0%+ | x4.64 | x6.96 |
+| 2 | Huge | 0%+ | x5.67 | x8.51 |
+| 3 | Medium | 0%+ | x3.61 | x5.41 |
+| 4 | Small | 0%+ | x2.58 | x3.87 |
 
 ___
 
