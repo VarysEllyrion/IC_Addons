@@ -754,9 +754,10 @@ Class IC_PotionSustain_Component
 		{
 			for j,w in buffsObj
 			{
-				if (w > 1 AND !this.FoundHighAreaPot)
+				psHasPotID := this.HasValue(this.PotIDs,j)
+				if (w > 1 AND psHasPotID AND !this.FoundHighAreaPot)
 					this.FoundHighAreaPot := true
-				if (!this.HasValue(this.PotIDs,j))
+				if (!psHasPotID)
 					psCalcAuto[j] := w
 			}
 		}
@@ -787,15 +788,21 @@ Class IC_PotionSustain_Component
 		local waning := "Available."
 		local abundant := "Abundant."
 		local blocked := "Blocked by user."
+		psSmallWaxStatus := this.DisableSmall ? blocked : (!this.ISBWaxingPots["s"] AND this.PotAmounts["s"] >= this.ISBThreshMin) OR (this.PotAmounts["s"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["s"] ? waxing : waning
+		psMediumWaxStatus := this.DisableMedium ? blocked : (!this.ISBWaxingPots["m"] AND this.PotAmounts["m"] >= this.ISBThreshMin) OR (this.PotAmounts["m"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["m"] ? waxing : waning
+		psLargeWaxStatus := this.DisableLarge ? blocked : (!this.ISBWaxingPots["l"] AND this.PotAmounts["l"] >= this.ISBThreshMin) OR (this.PotAmounts["l"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["l"] ? waxing : waning
+		psHugeWaxStatus := this.DisableHuge ? blocked : this.WaxingPots["h"] ? waxing : waning
+		if (psSmallWaxStatus == waxing && psMediumWaxStatus == waxing && psLargeWaxStatus == waxing && psHugeWaxStatus == waxing)
+			psSmallWaxStatus := "Forced available because nothing is available."
 		GuiControl, ICScriptHub:Text, g_PS_SmallPotCountStatus, % this.PotAmounts["s"]
 		GuiControl, ICScriptHub:Text, g_PS_MediumPotCountStatus, % this.PotAmounts["m"]
 		GuiControl, ICScriptHub:Text, g_PS_LargePotCountStatus, % this.PotAmounts["l"]
 		GuiControl, ICScriptHub:Text, g_PS_HugePotCountStatus, % this.PotAmounts["h"]
 		GuiControl, ICScriptHub:Text, g_PS_GemHunterPotCountStatus, % this.PotAmounts["gh"]
-		GuiControl, ICScriptHub:Text, g_PS_SmallPotWaxingStatus, % this.DisableSmall ? blocked : (!this.ISBWaxingPots["s"] AND this.PotAmounts["s"] >= this.ISBThreshMin) OR (this.PotAmounts["s"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["s"] ? waxing : waning
-		GuiControl, ICScriptHub:Text, g_PS_MediumPotWaxingStatus, % this.DisableMedium ? blocked : (!this.ISBWaxingPots["m"] AND this.PotAmounts["m"] >= this.ISBThreshMin) OR (this.PotAmounts["m"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["m"] ? waxing : waning
-		GuiControl, ICScriptHub:Text, g_PS_LargePotWaxingStatus, % this.DisableLarge ? blocked : (!this.ISBWaxingPots["l"] AND this.PotAmounts["l"] >= this.ISBThreshMin) OR (this.PotAmounts["l"] >= this.ISBThreshMax) ? abundant : this.WaxingPots["l"] ? waxing : waning
-		GuiControl, ICScriptHub:Text, g_PS_HugePotWaxingStatus, % this.DisableHuge ? blocked : this.WaxingPots["h"] ? waxing : waning
+		GuiControl, ICScriptHub:Text, g_PS_SmallPotWaxingStatus, % psSmallWaxStatus
+		GuiControl, ICScriptHub:Text, g_PS_MediumPotWaxingStatus, % psMediumWaxStatus
+		GuiControl, ICScriptHub:Text, g_PS_LargePotWaxingStatus, % psLargeWaxStatus
+		GuiControl, ICScriptHub:Text, g_PS_HugePotWaxingStatus, % psHugeWaxStatus
 		GuiControl, ICScriptHub:Text, g_PS_GemHunterStatus, % this.GemHunter > 0 ? "Active: " . (this.FmtSecs(this.GemHunter)) . " remaining." : "Inactive."
 		GuiControl, ICScriptHub:Text, g_PS_BuyingSilversStatus, % this.ChestSmallPotBuying ? "Yes." : "No."
 		Gui, Submit, NoHide
@@ -828,7 +835,7 @@ Class IC_PotionSustain_Component
 			else if (this.PendingCall)
 				psStatus := "Pending potion swapping. Waiting for next offline stack."
 			else if (this.FoundHighAreaPot)
-				psStatus := "Warning: A potion in the Modron has a zone greater than 1."
+				psStatus := "Warning: A speed potion in the Modron has a zone greater than 1."
 		}
 		GuiControl, ICScriptHub:Text, g_PS_AutomationStatus, % psStatus
 		Gui, Submit, NoHide
