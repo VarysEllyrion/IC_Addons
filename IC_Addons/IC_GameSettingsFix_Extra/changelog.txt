@@ -1,3 +1,5 @@
+29   January 2025 - v0.1.7
+ - Changing default LevelupAmountIndex to x100 because more people use Level Up addon than don't. And everyone *should* be using the Level Up addon.
 25   January 2025 - v0.1.6
  - Added support for the Never Open Active Tasks setting.
 25   October 2024 - v0.1.5

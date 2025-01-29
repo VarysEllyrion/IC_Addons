@@ -146,7 +146,7 @@ Class IC_GameSettingsFix_Component
 
 	Injected := false
 	TimerFunctions := {}
-	DefaultSettings := {"TargetFramerate":600,"PercentOfParticlesSpawned":0,"resolution_x":1280,"resolution_y":720,"resolution_fullscreen":false,"ReduceFramerateWhenNotInFocus":false,"LevelupAmountIndex":4,"UseConsolePortraits":false,"FormationSaveIncludeFeatsCheck":false,"NarrowHeroBoxes":true,"ShowAllHeroBoxes":true,"NeverOpenActiveTasks":true,"CurrentProfile":""}
+	DefaultSettings := {"TargetFramerate":600,"PercentOfParticlesSpawned":0,"resolution_x":1280,"resolution_y":720,"resolution_fullscreen":false,"ReduceFramerateWhenNotInFocus":false,"LevelupAmountIndex":3,"UseConsolePortraits":false,"FormationSaveIncludeFeatsCheck":false,"NarrowHeroBoxes":true,"ShowAllHeroBoxes":true,"NeverOpenActiveTasks":true,"CurrentProfile":""}
 	Settings := {}
 	GameSettingsFileLocation := ""
 	InstanceID := ""
