@@ -6,7 +6,7 @@ Class IC_PotionSustain_Component
 	TimerFunctions := ""
 	SanitySize := 5000
 	
-	DefaultSettings := {"SmallThreshMin":75,"SmallThreshMax":125,"AutomateThreshMin":50,"AutomateThreshMax":100,"Alternate":true,"DisableSmalls":false,"DisableMediums":false,"DisableLarges":false,"DisableHuges":false,"EnableISB":true,"ISBThreshMin":200,"ISBThreshMax":250,"EnableFSB":false,"FSBType":g_PS_Brackets[1]}
+	DefaultSettings := {"SmallThreshMin":30,"SmallThreshMax":60,"AutomateThreshMin":15,"AutomateThreshMax":45,"Alternate":true,"DisableSmalls":false,"DisableMediums":false,"DisableLarges":false,"DisableHuges":false,"EnableISB":true,"ISBThreshMin":75,"ISBThreshMax":90,"EnableFSB":false,"FSBType":g_PS_Brackets[1]}
 	UserData := ""
 	RunsCount := -1
 	ModronResetZone := -1
@@ -32,7 +32,7 @@ Class IC_PotionSustain_Component
 	EnableISB := this.DefaultSettings["EnableISB"]
 	ISBThreshMin := this.DefaultSettings["ISBThreshMin"]
 	ISBThreshMax := this.DefaultSettings["ISBThreshMax"]
-	ISBSanityGap := 100
+	ISBSanityGap := 30
 	ISBWaxingPots := {"s":true,"m":true,"l":true,"h":true}
 	EnableFSB := this.DefaultSettings["EnableFSB"]
 	FSBType := this.DefaultSettings["FSBType"]
@@ -98,12 +98,12 @@ Class IC_PotionSustain_Component
 	}
 	
 	; Loads settings from the addon's setting.json file.
-	LoadSettings()
+	LoadSettings(psForceDefault := false)
 	{
 		Gui, Submit, NoHide
 		psWriteSettings := false
 		this.Settings := g_SF.LoadObjectFromJSON(this.SettingsPath)
-		if(!IsObject(this.Settings))
+		if(!IsObject(this.Settings) || psForceDefault)
 		{
 			this.SetDefaultSettings()
 			psWriteSettings := true
@@ -198,6 +198,11 @@ Class IC_PotionSustain_Component
 		this.UpdateGUI()
 	}
 	
+	SaveDefaultSettings()
+	{
+		this.LoadSettings(true)
+	}
+	
 	UpdateSharedSettings()
 	{
 		try {
@@ -208,7 +213,7 @@ Class IC_PotionSustain_Component
 	
 	SanityCheckSettings()
 	{
-		local sanityGap := 25
+		local sanityGap := 15
 		local sanityChecked := false
 		if (!this.IsNumber(g_PS_ChestSmallThreshMin) OR g_PS_ChestSmallThreshMin < 1 OR !this.IsNumber(g_PS_ChestSmallThreshMax) OR g_PS_ChestSmallThreshMax < 1 OR !this.IsNumber(g_PS_AutomateThreshMin) OR g_PS_AutomateThreshMin < 1 OR !this.IsNumber(g_PS_AutomateThreshMax) OR g_PS_AutomateThreshMax < 1 OR !this.IsNumber(g_PS_IncreaseBracketThreshMin) OR g_PS_IncreaseBracketThreshMin < 1 OR !this.IsNumber(g_PS_IncreaseBracketThreshMax) OR g_PS_IncreaseBracketThreshMax < 1)
 		{

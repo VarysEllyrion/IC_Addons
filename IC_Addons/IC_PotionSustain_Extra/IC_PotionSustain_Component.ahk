@@ -21,6 +21,9 @@ Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Button, x145 y+-15 w100 vg_PotionSustainSave_Clicked, `Save Settings
 buttonFunc := ObjBindMethod(g_PotionSustain, "SaveSettings")
 GuiControl,ICScriptHub: +g, g_PotionSustainSave_Clicked, % buttonFunc
+Gui, ICScriptHub:Add, Button, x+150 y+-24 w100 vg_PotionSustainDefault_Clicked, `Default Settings
+buttonFunc := ObjBindMethod(g_PotionSustain, "SaveDefaultSettings")
+GuiControl,ICScriptHub: +g, g_PotionSustainDefault_Clicked, % buttonFunc
 Gui, ICScriptHub:Add, Text, x5 y+10 w130 +Right, Status:
 Gui, ICScriptHub:Add, Text, x145 y+-13 w400 vg_PS_StatusText, Waiting for Gem Farm to start
 Gui, ICScriptHub:Add, GroupBox, x15 y+10 Section w500 h90, Sustain Smalls

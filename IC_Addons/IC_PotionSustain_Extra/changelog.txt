@@ -1,3 +1,6 @@
+03  February 2025 - v0.2.9
+ - Lowering the default threshold values to be better suited for newer players.
+ - Added a button to reset to default settings.
 27   January 2025 - v0.2.8
  - Changed the warning for using a potion on a zone larger than 1 to only show for speed potions.
  - Fixed a bug with Current Potion Amounts notes where all potions could say `Unavailable. Restocking.` even if it was still using smalls (because it always tries to use a potion).
