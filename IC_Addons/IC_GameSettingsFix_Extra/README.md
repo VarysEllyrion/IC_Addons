@@ -4,6 +4,9 @@ There are various situations in which the game will overwrite any custom changes
 
 When this happens - your BPH will suffer. This is an AddOn for Script Hub that will try to fix the settings when that happens.
 
+> [!CAUTION]
+> *If your Idle Champions install location is in Program Files or any other Windows protected folder - Script Hub will need to run with Admin privileges to be able to modify the localSettings.json file. This is non-negotiable.*
+
 > [!NOTE]
 > *This can only change the settings while the game is closed. So - typically during offline stacking - but it may also catch it if the Gem Farm script forces a game restart due to getting stuck or the like.*
 
