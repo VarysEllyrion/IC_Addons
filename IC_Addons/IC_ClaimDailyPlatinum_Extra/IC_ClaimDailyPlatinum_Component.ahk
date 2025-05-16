@@ -1,6 +1,5 @@
 #include %A_LineFile%\..\..\..\SharedFunctions\ObjRegisterActive.ahk
 #include %A_LineFile%\..\IC_ClaimDailyPlatinum_Functions.ahk
-#include %A_LineFile%\..\IC_ClaimDailyPlatinum_Overrides.ahk
 #include %A_LineFile%\..\..\..\ServerCalls\IC_ServerCalls_Class.ahk
 
 GUIFunctions.AddTab("Claim Daily Platinum")
@@ -81,7 +80,6 @@ Class IC_ClaimDailyPlatinum_Component
 {
 	static SettingsPath := A_LineFile . "\..\ClaimDailyPlatinum_Settings.json"
 	static WaitingMessage := "Waiting for BrivGemFarm to Start."
-	static OfflineMessage := "Waiting for the next offline stack restart."
 	
 	Injected := false
 	Running := false
@@ -102,6 +100,8 @@ Class IC_ClaimDailyPlatinum_Component
 	Claimed := {"Platinum":0,"FreeOffer":0,"BonusChests":0,"Celebrations":0}
 	; The flags to tell the timers to pause if the script is waiting for the game to go offline.
 	Claimable := {"Platinum":false,"FreeOffer":false,"BonusChests":false,"Celebrations":false}
+	; The names of each type
+	Names := {"Platinum":"Daily Platinum","FreeOffer":"Weekly Offers","BonusChests":"Premium Bonus Chests","Celebrations":"Celebration Rewards"}
 	FreeOfferIDs := []
 	BonusChestIDs := []
 	CelebrationCodes := []
@@ -183,7 +183,7 @@ Class IC_ClaimDailyPlatinum_Component
 		CDP_LoopCounter := 1
 		for k,v in this.Settings
 		{
-			if (v && this.CurrentCD[k] <= 0)
+			if (v && this.CurrentCD[k] <= A_TickCount)
 			{
 				this.CurrentCD[k] := A_TickCount + (this.MainLoopCD*CDP_LoopCounter)
 				CDP_LoopCounter += 1
@@ -229,7 +229,7 @@ Class IC_ClaimDailyPlatinum_Component
 	; This loop gets called once per MainLoopCD.
 	MainLoop()
 	{
-		this.UpdateMainStatus("Idle.")
+		this.UpdateMainStatus("Checking...")
 		if (!IC_ClaimDailyPlatinum_Functions.IsGameClosed())
 		{
 			this.InstanceID := g_SF.Memory.ReadInstanceID()
@@ -241,73 +241,29 @@ Class IC_ClaimDailyPlatinum_Component
 				this.Platform := g_SF.Memory.ReadPlatform()
 			if (this.GameVersion == "")
 				this.GameVersion := g_SF.Memory.ReadBaseGameVersion()
-		}
-		else
-			return
-		CDP_AnyClaimable := false
-		SharedRunData := ""
-		try
-		{
-			SharedRunData := ComObjActive(g_BrivFarm.GemFarmGUID)
-		}
-		catch
-		{
-			this.UpdateMainStatus("Could not connect to the Gem Farm script.")
-			return
-		}
-		; Decrement cooldown and if the timer is <= 0 check if anything can be claimed
-		for k,v in this.CurrentCD
-		{
-			if (!this.Settings[k])
-				continue
-			if (k == "Celebrations" && this.CheckCelebrationsAgain) {
-				CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k)
-				if (CDP_CurrClaimedState == 2)
-					this.CurrentCD[k] := 0
-			}
-			if (this.CurrentCD[k] <= A_TickCount)
+			
+			for k,v in this.CurrentCD
 			{
-				CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k)
-				; If it has been claimed:
-				if (CDP_CurrClaimedState == 2)
+				if (!this.Settings[k])
+					continue
+				if (this.CurrentCD[k] <= A_TickCount)
 				{
-					; Increment claimed counter:
-					if (k == "FreeOffer")
-						this.Claimed[k] += this.ArrSize(this.FreeOfferIDs)
-					else if (k == "BonusChests")
-						this.Claimed[k] += this.ArrSize(this.BonusChestIDs)
-					else if (k == "Celebrations")
-						this.Claimed[k] += this.ArrSize(this.CelebrationCodes)
-					else
-						this.Claimed[k] += 1
-					this.Claimable[k] := false ; Set it not claimable
-					this.CurrentCD[k] := 0 ; Set current CD to 0
-					SharedRunData.CDP_ClearClaimedState(k) ; Clear claimed state for StackRestart
-					CDP_CurrClaimedState := SharedRunData.CDP_GetClaimedState(k) ; Clear claimed state here too
-				}
-				; If it isn't claimable:
-				if (!this.Claimable[k])
-					this.CallCheckClaimable(k)
-				; If it is claimable and the claim state is 0:
-				if (CDP_CurrClaimedState == 0 && this.Claimable[k])
-				{
-					; Set claimables:
-					SharedRunData.CDP_SetClaimable(k, this.GetBoilerplate())
-					if (k == "FreeOffer")
-						for l,b in this.FreeOfferIDs
-							SharedRunData.CDP_AddFreebieOfferIDs(b)
-					if (k == "BonusChests")
-						for l,b in this.BonusChestIDs
-							SharedRunData.CDP_AddBonusChestIDs(b)
-					if (k == "Celebrations")
-						for l,b in this.CelebrationCodes
-							SharedRunData.CDP_AddCelebrationCodes(b)
-					CDP_AnyClaimable := true ; And allow the main status to change
+					; If it's not claimable - check if it can be claimed.
+					if (!this.Claimable[k])
+						this.CallCheckClaimable(k)
+					; If it now is claimable - claim it.
+					if (this.Claimable[k])
+					{
+						this.UpdateMainStatus("Claiming " . (this.Names[k]))
+						this.Claim(k)
+						this.CurrentCD[k] := A_TickCount + this.SafetyDelay
+						if (!(k=="Celebrations"&&this.CheckCelebrationsAgain))
+							this.Claimable[k] := false
+					}
 				}
 			}
 		}
-		if (CDP_AnyClaimable)
-			this.UpdateMainStatus(this.OfflineMessage)
+		this.UpdateMainStatus("Idle.")
 		this.UpdateGUI()
 	}
 	
@@ -430,6 +386,73 @@ Class IC_ClaimDailyPlatinum_Component
 		return [false, A_TickCount + this.StartingCD]
 	}
 	
+	Claim(CDP_key)
+	{
+		params := this.GetBoilerplate()
+		if (CDP_key == "Platinum")
+		{
+			extraParams := "&is_boost=0" . params
+			response := g_ServerCalls.ServerCall("claimdailyloginreward",extraParams)
+			if (IsObject(response) && response.success)
+			{
+				if (response.daily_login_details.premium_active)
+				{
+					extraParams := "&is_boost=1" . params
+					response := g_ServerCalls.ServerCall("claimdailyloginreward",extraParams)
+				}
+				this.Claimed[CDP_key] += 1
+			}
+		}
+		else if (CDP_key == "FreeOffer")
+		{
+			for k,v in this.FreeOfferIDs
+			{
+				extraParams := "&offer_id=" . v . params
+				response := g_ServerCalls.ServerCall("PurchaseALaCarteOffer",extraParams)
+				if (!IsObject(response) || !response.success)
+				{
+					; server call failed
+					this.FreeOfferIDs := []
+					return
+				}
+			}
+			this.Claimed[CDP_key] += this.ArrSize(this.FreeOfferIDs)
+			this.FreeOfferIDs := []
+		}
+		else if (CDP_key == "BonusChests")
+		{
+			for k,v in this.BonusChestIDs
+			{
+				extraParams := "&premium_item_id=" . v . params
+				response := g_ServerCalls.ServerCall("claimsalebonus",extraParams)
+				if (!IsObject(response) || !response.success)
+				{
+					; server call failed
+					this.BonusChestIDs := []
+					return
+				}
+			}
+			this.Claimed[CDP_key] += this.ArrSize(this.BonusChestIDs)
+			this.BonusChestIDs := []
+		}
+		else if (CDP_key == "Celebrations")
+		{
+			for k,v in this.CelebrationCodes
+			{
+				extraParams := "&code=" . v . params
+				response := g_ServerCalls.ServerCall("redeemcoupon",extraParams)
+				if (!IsObject(response) || !response.success)
+				{
+					; server call failed
+					this.CelebrationCodes := []
+					return
+				}
+			}
+			this.Claimed[CDP_key] += this.ArrSize(this.CelebrationCodes)
+			this.CelebrationCodes := []
+		}
+	}
+	
 	; =======================
 	; ===== TIMER STUFF =====
 	; =======================
@@ -507,8 +530,6 @@ Class IC_ClaimDailyPlatinum_Component
 		{
 			if (!this.Settings[CDP_key])
 				return "Disabled."
-			if (this.Claimable[CDP_key])
-				return "Claiming on next offline stack."
 			; Ceil the remaining milliseconds to the nearest MainLoopCD so it never shows 00m.
 			; Then turn it into seconds to format.
 			return this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.CurrentCD[CDP_key]))
