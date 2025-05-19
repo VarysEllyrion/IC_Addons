@@ -1,3 +1,5 @@
+15       May 2025 - v0.3.0
+ - Claiming will now happen while the game is on. Removing any delay between a check and claiming.
 18  December 2024 - v0.2.2
  - Slight bug fix to Celebration rewards code that will allow it to claim multiple codes for the same day - if such a thing ever occurs (it probably won't).
 04  December 2024 - v0.2.1
