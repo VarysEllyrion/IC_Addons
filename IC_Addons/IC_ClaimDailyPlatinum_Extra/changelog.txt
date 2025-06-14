@@ -1,3 +1,5 @@
+14      June 2025 - v0.3.1
+ - Potentially fixing an issue with the Day 4+ special reward from celebrations not being claimed.
 15       May 2025 - v0.3.0
  - Claiming will now happen while the game is on. Removing any delay between a check and claiming.
 18  December 2024 - v0.2.2

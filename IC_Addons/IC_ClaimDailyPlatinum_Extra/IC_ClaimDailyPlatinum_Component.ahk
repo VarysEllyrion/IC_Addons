@@ -107,7 +107,6 @@ Class IC_ClaimDailyPlatinum_Component
 	CelebrationCodes := []
 	DailyBoostExpires := 0
 	StaggeredChecks := {"Platinum":1,"FreeOffer":2,"BonusChests":3,"Celebrations":4}
-	CheckCelebrationsAgain := false
 	
 	UserID := ""
 	UserHash := ""
@@ -257,8 +256,7 @@ Class IC_ClaimDailyPlatinum_Component
 						this.UpdateMainStatus("Claiming " . (this.Names[k]))
 						this.Claim(k)
 						this.CurrentCD[k] := A_TickCount + this.SafetyDelay
-						if (!(k=="Celebrations"&&this.CheckCelebrationsAgain))
-							this.Claimable[k] := false
+						this.Claimable[k] := false
 					}
 				}
 			}
@@ -336,13 +334,11 @@ Class IC_ClaimDailyPlatinum_Component
 		else if (CDP_key == "Celebrations")
 		{
 			this.CelebrationCodes := []
-			this.CheckCelebrationsAgain := false
 			wrlLoc := g_SF.Memory.GetWebRequestLogLocation()
 			if (wrlLoc == "")
 				return [false, A_TickCount + this.NoTimerDelay]
 			webRequestLog := ""
 			FileRead, webRequestLog, %wrlLoc%
-			containsOneToGo := false
 			CDP_nextClaimSeconds := 9999999
 			if (InStr(webRequestLog, """dialog"":"))
 			{
@@ -366,18 +362,13 @@ Class IC_ClaimDailyPlatinum_Component
 										this.CelebrationCodes.Push(c.params.code)
 								}
 							}
-							if (InStr(b.text, "1 to go"))
-								containsOneToGo := true
 						}
 					}
 				}
 			}
 			webRequestLog := ""
-			if (this.ArrSize(this.CelebrationCodes) > 0) {
-				if (containsOneToGo)
-					this.CheckCelebrationsAgain := true
+			if (this.ArrSize(this.CelebrationCodes) > 0)
 				return [true, 0]
-			}
 			if (CDP_nextClaimSeconds < 9999999)
 				return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
 			else
