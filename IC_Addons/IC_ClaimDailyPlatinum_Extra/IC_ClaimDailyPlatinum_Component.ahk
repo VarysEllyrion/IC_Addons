@@ -324,7 +324,7 @@ Class IC_ClaimDailyPlatinum_Component
 			if (IsObject(response) && response.success)
 			{
 				for k,v in response.package_deals
-					if (v.bonus_status == "0")
+					if (v.bonus_status == "0" && this.ArrSize(v.bonus_item) > 0)
 						this.BonusChestIDs.Push(v.item_id)
 				if (this.ArrSize(this.BonusChestIDs) > 0)
 					return [true, 0]

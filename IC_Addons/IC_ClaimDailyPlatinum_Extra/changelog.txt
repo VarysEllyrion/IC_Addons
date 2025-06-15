@@ -1,3 +1,5 @@
+15      June 2025 - v0.3.2
+ - Fixed a very CNE issue with Claim Free Premium Pack Bonus Chests. Some were pretending to be claimable but weren't. Thank you James for being a guinea pig.
 14      June 2025 - v0.3.1
  - Potentially fixing an issue with the Day 4+ special reward from celebrations not being claimed.
 15       May 2025 - v0.3.0
