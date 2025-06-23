@@ -476,7 +476,6 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		else if (CDP_key == "FreeOffer")
 		{
-			this.FreeOfferIDs := []
 			for k,v in this.FreeOfferIDs
 			{
 				extraParams := "&offer_id=" . v . params
@@ -484,14 +483,15 @@ Class IC_ClaimDailyPlatinum_Component
 				if (!IsObject(response) || !response.success)
 				{
 					; server call failed
+					this.FreeOfferIDs := []
 					return
 				}
 			}
 			this.Claimed[CDP_key] += this.ArrSize(this.FreeOfferIDs)
+			this.FreeOfferIDs := []
 		}
 		else if (CDP_key == "BonusChests")
 		{
-			this.BonusChestIDs := []
 			for k,v in this.BonusChestIDs
 			{
 				extraParams := "&premium_item_id=" . v . params
@@ -499,14 +499,15 @@ Class IC_ClaimDailyPlatinum_Component
 				if (!IsObject(response) || !response.success)
 				{
 					; server call failed
+					this.BonusChestIDs := []
 					return
 				}
 			}
 			this.Claimed[CDP_key] += this.ArrSize(this.BonusChestIDs)
+			this.BonusChestIDs := []
 		}
 		else if (CDP_key == "Celebrations")
 		{
-			this.CelebrationCodes := []
 			for k,v in this.CelebrationCodes
 			{
 				extraParams := "&code=" . v . params
@@ -514,10 +515,12 @@ Class IC_ClaimDailyPlatinum_Component
 				if (!IsObject(response) || !response.success)
 				{
 					; server call failed
+					this.CelebrationCodes := []
 					return
 				}
 			}
 			this.Claimed[CDP_key] += this.ArrSize(this.CelebrationCodes)
+			this.CelebrationCodes := []
 		}
 	}
 	
@@ -592,7 +595,7 @@ Class IC_ClaimDailyPlatinum_Component
 		
 		CDP_arrHasValue := this.ArrHasValue(this.TrialsPresetStatuses,this.TrialsStatus)
 		GuiControl, ICScriptHub:, g_CDP_TrialsStatusHeader, % (CDP_arrHasValue ? "Trials Status:" : "Tiamat Dies in:")
-		GuiControl, ICScriptHub:, g_CDP_TrialsStatus, % (CDP_arrHasValue ? this.TrialsStatus : this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.TrialsStatus)) . " (est)")
+		GuiControl, ICScriptHub:, g_CDP_TrialsStatus, % (CDP_arrHasValue ? this.TrialsStatus : (this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.TrialsStatus)) . " (est)"))
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostHeader, % "Daily Boost" . (this.DailyBoostExpires > 0 ? " Expires" : "") . ":"
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.DailyBoostExpires)) : (this.DailyBoostExpires == 0 ? "Inactive" : ""))
 		Gui, Submit, NoHide
