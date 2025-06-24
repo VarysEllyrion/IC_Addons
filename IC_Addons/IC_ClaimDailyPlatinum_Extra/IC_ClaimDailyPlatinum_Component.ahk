@@ -17,18 +17,18 @@ Gui, ICScriptHub:Add, Text, x5 y+10 w130 +Right, Status:
 Gui, ICScriptHub:Add, Text, x145 y+-13 w400 vg_CDP_StatusText, % IC_ClaimDailyPlatinum_Component.WaitingMessage
 
 GuiControlGet, pos, ICScriptHub:Pos, g_CDP_StatusText
+g_CDP_infoGap := 5
+g_CDP_infoDist := 15
 g_CDP_lineHeight := posH
 g_CDP_gbCol1 := 15
 g_CDP_gbCol2 := 273
 g_CDP_gbWidth := 252
 g_CDP_gbHeight1 := 100
-g_CDP_gbHeight2 := g_CDP_gbHeight1 + g_CDP_lineHeight + 5
+g_CDP_gbHeight2 := g_CDP_gbHeight1 + g_CDP_lineHeight + g_CDP_infoGap
 g_CDP_cbDist := 25
-g_CDP_infoDist := 15
-g_CDP_infoGap := 5
 g_CDP_col1x := 15
 g_CDP_col1w := 120
-g_CDP_col2x := g_CDP_col1x + g_CDP_col1w + 5
+g_CDP_col2x := g_CDP_col1x + g_CDP_col1w + g_CDP_infoGap
 g_CDP_col2w := 105
 
 ; Claim Daily Platinum - is tall due to daily boost line.
@@ -123,8 +123,8 @@ Class IC_ClaimDailyPlatinum_Component
 	CelebrationCodes := []
 	DailyBoostExpires := -1
 	TrialsCampaignID := 0
-	TrialsPresetStatuses := ["Unknown","Tiamat is Dead","Inactive",""]
-	TrialsStatus := this.TrialsPresetStatuses[4]
+	TrialsPresetStatuses := ["Unknown","Tiamat is Dead","Inactive","Sitting in Lobby",""]
+	TrialsStatus := this.TrialsPresetStatuses[5]
 	TiamatHP := [40,75,130,200,290,430,610,860,1200,1600]
 	StaggeredChecks := {"Platinum":1,"Trials":2,"FreeOffer":3,"BonusChests":4,"Celebrations":5}
 	
@@ -336,7 +336,8 @@ Class IC_ClaimDailyPlatinum_Component
 					return [true, 0]
 				}
 				CDP_trialsCampaigns := CDP_trialsData.campaigns
-				if (CDP_trialsCampaigns != "" && this.ArrSize(CDP_trialsCampaigns) > 0 && CDP_trialsCampaigns[1].started)
+				CDP_trialsCampaignsSize := this.ArrSize(CDP_trialsCampaigns)
+				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && CDP_trialsCampaigns[1].started)
 				{
 					CDP_trialsCampaign := CDP_trialsCampaigns[1]
 					CDP_tiamatHP := (this.TiamatHP[CDP_trialsCampaign.difficulty_id] * 10000000) - CDP_trialsCampaign.total_damage_done
@@ -354,6 +355,13 @@ Class IC_ClaimDailyPlatinum_Component
 					FileAppend, %trialsMsg%`n, %trialsLog%
 					this.TrialsStatus := A_TickCount + CDP_timeTilTiamatDies * 1000
 					return [false, A_TickCount + CDP_timeToCheck]
+				}
+				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && !CDP_trialsCampaigns[1].started)
+				{
+					trialsMsg := "Sitting in lobby."
+					FileAppend, %trialsMsg%`n, %trialsLog%
+					this.TrialsStatus := this.TrialsPresetStatuses[4]
+					return [false, A_TickCount + this.MainLoopCD*10]
 				}
 			}
 			trialsMsg := "Trial isn't running."
