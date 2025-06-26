@@ -465,10 +465,19 @@ Class IC_GameSettingsFix_Component
 	
 	FindSettingsFile()
 	{
-		local webRequestLogLoc := g_SF.Memory.GetWebRequestLogLocation()
-		if (!InStr(webRequestLogLoc, "webRequestLog"))
-			return
-		local settingsFileLoc := StrReplace(webRequestLogLoc, "downloaded_files\webRequestLog.txt", "localSettings.json")
+		installPath := g_UserSettings["InstallPath"] ;Contains filename
+		if (InStr(installPath,"com.epicgames.launcher://"))
+		{
+			webRequestLogLoc := g_SF.Memory.GetWebRequestLogLocation()
+			if (!InStr(webRequestLogLoc, "webRequestLog"))
+				return
+			settingsFileLoc := StrReplace(webRequestLogLoc, "downloaded_files\webRequestLog.txt", "localSettings.json")
+		}
+		else
+		{
+			SplitPath, installPath,, settingsFileLoc
+			settingsFileLoc .= "\IdleDragons_Data\StreamingAssets\localSettings.json"
+		}
 		if (!FileExist(settingsFileLoc))
 			return
 		this.GameSettingsFileLocation := settingsFileLoc
