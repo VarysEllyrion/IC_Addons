@@ -319,8 +319,6 @@ Class IC_ClaimDailyPlatinum_Component
 		}
 		else if (CDP_key == "Trials")
 		{
-			trialsLog := A_LineFile . "\..\trials_logs.json"
-			trialsMsg := ""
 			this.TrialsCampaignID := 0
 			params := this.GetBoilerplate()
 			response := g_ServerCalls.ServerCall("trialsrefreshdata",params)
@@ -330,8 +328,6 @@ Class IC_ClaimDailyPlatinum_Component
 				if (CDP_trialsData.pending_unclaimed_campaign != "")
 				{
 					this.TrialsCampaignID := CDP_trialsData.pending_unclaimed_campaign
-					trialsMsg := "Found a campaign ID to claim: " . (this.TrialsCampaignID)
-					FileAppend, %trialsMsg%`n, %trialsLog%
 					this.TrialsStatus := this.TrialsPresetStatuses[2]
 					return [true, 0]
 				}
@@ -351,21 +347,15 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 500
 					CDP_timeToCheck := Min(this.NoTimerDelay,CDP_timeToCheck)
 					CDP_timeToCheck := Max(this.StartingCD,CDP_timeToCheck)
-					trialsMsg := "Trial is running: " . CDP_timeTilTiamatDies . " / " . CDP_trialEndsIn . " / " . (CDP_timeToCheck/1000)
-					FileAppend, %trialsMsg%`n, %trialsLog%
 					this.TrialsStatus := A_TickCount + CDP_timeTilTiamatDies * 1000
 					return [false, A_TickCount + CDP_timeToCheck]
 				}
 				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && !CDP_trialsCampaigns[1].started)
 				{
-					trialsMsg := "Sitting in lobby."
-					FileAppend, %trialsMsg%`n, %trialsLog%
 					this.TrialsStatus := this.TrialsPresetStatuses[4]
 					return [false, A_TickCount + this.MainLoopCD*10]
 				}
 			}
-			trialsMsg := "Trial isn't running."
-			FileAppend, %trialsMsg%`n, %trialsLog%
 			this.TrialsStatus := this.TrialsPresetStatuses[3]
 			return [false, A_TickCount + this.NoTimerDelay]
 		}
