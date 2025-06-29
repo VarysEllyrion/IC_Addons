@@ -1,3 +1,5 @@
+29      June 2025 - v0.3.4
+ - Modifying timers slightly for trials rewards claiming.
 23      June 2025 - v0.3.3
  - Adding support to claim trials rewards.
 15      June 2025 - v0.3.2

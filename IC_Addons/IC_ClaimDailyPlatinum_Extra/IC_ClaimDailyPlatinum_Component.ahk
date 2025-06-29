@@ -344,7 +344,7 @@ Class IC_ClaimDailyPlatinum_Component
 					}
 					CDP_timeTilTiamatDies := ((CDP_tiamatHP == "" || CDP_currDPS == "" || CDP_currDPS <= 0) ? 99999999 : (CDP_tiamatHP / CDP_currDPS))
 					CDP_trialEndsIn := CDP_trialsCampaign.ends_in
-					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 500
+					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 200
 					CDP_timeToCheck := Min(this.NoTimerDelay,CDP_timeToCheck)
 					CDP_timeToCheck := Max(this.StartingCD,CDP_timeToCheck)
 					this.TrialsStatus := A_TickCount + CDP_timeTilTiamatDies * 1000
