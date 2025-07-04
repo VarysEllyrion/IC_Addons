@@ -336,12 +336,14 @@ Class IC_ClaimDailyPlatinum_Component
 				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && CDP_trialsCampaigns[1].started)
 				{
 					CDP_trialsCampaign := CDP_trialsCampaigns[1]
-					CDP_tiamatHP := (this.TiamatHP[CDP_trialsCampaign.difficulty_id] * 10000000) - CDP_trialsCampaign.total_damage_done
 					CDP_currDPS := 0
+					CDP_totalDamage := 0
 					for k,v in CDP_trialsCampaign.players
 					{
 						CDP_currDPS += v.dps
+						CDP_totalDamage += v.total_damage
 					}
+					CDP_tiamatHP := (this.TiamatHP[CDP_trialsCampaign.difficulty_id] * 10000000) - CDP_totalDamage
 					CDP_timeTilTiamatDies := ((CDP_tiamatHP == "" || CDP_currDPS == "" || CDP_currDPS <= 0) ? 99999999 : (CDP_tiamatHP / CDP_currDPS))
 					CDP_trialEndsIn := CDP_trialsCampaign.ends_in
 					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 200
