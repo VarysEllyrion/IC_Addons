@@ -1,3 +1,6 @@
+ 4      July 2025 - v0.3.6
+ - Modifying some timers for Trials slightly.
+ - Properly making Daily Boost and Trials Status messages clear when script is stopped.
  4      July 2025 - v0.3.5
  - Fixing how Tiamat's HP is calculated because CNE.
 29      June 2025 - v0.3.4

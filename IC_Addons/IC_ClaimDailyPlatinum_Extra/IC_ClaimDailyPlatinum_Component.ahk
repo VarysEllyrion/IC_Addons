@@ -105,7 +105,7 @@ Class IC_ClaimDailyPlatinum_Component
 	; The timer for MainLoop:
 	MainLoopCD := 60000 ; in milliseconds = 1 minute.
 	; The starting cooldown for each type:
-	StartingCD := 60000 ; in milliseconds = 1 minutes.
+	StartingCD := 60000 ; in milliseconds = 1 minute.
 	; The delay between when the server says a timer resets and when to check (for safety):
 	SafetyDelay := 30000 ; in milliseconds = 30 seconds.
 	; No Timer Delay (for when I can't find a timer in the data)
@@ -346,16 +346,16 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_tiamatHP := (this.TiamatHP[CDP_trialsCampaign.difficulty_id] * 10000000) - CDP_totalDamage
 					CDP_timeTilTiamatDies := ((CDP_tiamatHP == "" || CDP_currDPS == "" || CDP_currDPS <= 0) ? 99999999 : (CDP_tiamatHP / CDP_currDPS))
 					CDP_trialEndsIn := CDP_trialsCampaign.ends_in
-					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 200
+					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 500
 					CDP_timeToCheck := Min(this.NoTimerDelay,CDP_timeToCheck)
-					CDP_timeToCheck := Max(this.StartingCD,CDP_timeToCheck)
+					CDP_timeToCheck := Max(this.MainLoopCD,CDP_timeToCheck)
 					this.TrialsStatus := A_TickCount + CDP_timeTilTiamatDies * 1000
 					return [false, A_TickCount + CDP_timeToCheck]
 				}
 				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && !CDP_trialsCampaigns[1].started)
 				{
 					this.TrialsStatus := this.TrialsPresetStatuses[4]
-					return [false, A_TickCount + this.MainLoopCD*10]
+					return [false, A_TickCount + this.NoTimerDelay]
 				}
 			}
 			this.TrialsStatus := this.TrialsPresetStatuses[3]
@@ -421,13 +421,9 @@ Class IC_ClaimDailyPlatinum_Component
 							if (b.timer != "" && b.timer < CDP_nextClaimSeconds)
 								CDP_nextClaimSeconds := b.timer
 							if (b.type == "button" && InStr(b.text, "claim"))
-							{
 								for j,c in b.actions
-								{
 									if (c.action == "redeem_code")
 										this.CelebrationCodes.Push(c.params.code)
-								}
-							}
 						}
 					}
 				}
@@ -567,6 +563,8 @@ Class IC_ClaimDailyPlatinum_Component
 			this.CurrentCD[k] := 0
 			this.Claimable[k] := false
 		}
+		this.DailyBoostExpires := -1
+		this.TrialsStatus := this.TrialsPresetStatuses[5]
 		this.UpdateGUI()
 	}
 	

@@ -33,9 +33,8 @@ ___
 The second section of the addon determines whether the script will try to claim the rewards from Trials of Mount Tiamat.
 
 The timer for it is initialised to check 2 minutes after starting the Gem Farm script. After that it gets complicated.
-- If the Trial is not running then it will check every 8 hours.
-- If the Trial is in the lobby it will check every 10 minutes.
-- If the Trial is running it will calculate how long before Tiamat dies based on her current HP and total DPS and check again after one-fifth that much time or 8 hours (whichever is shorter).
+- If the Trial is not running or is in the lobby then it will check every 8 hours.
+- If the Trial is running it will calculate how long before Tiamat dies based on her current HP and total DPS and check again after half of that much time or 8 hours (whichever is shorter).
 
 This is all to try to make sure it will claim the reward at most a couple of minutes after the Trial ends - and that it can cope with DPS changes as players do more damage and complete their daily goals.
 
