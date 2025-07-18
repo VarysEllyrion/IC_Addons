@@ -563,9 +563,7 @@ Class IC_ClaimDailyPlatinum_Component
 			this.CurrentCD[k] := 0
 			this.Claimable[k] := false
 		}
-		this.DailyBoostExpires := -1
-		this.TrialsStatus := this.TrialsPresetStatuses[5]
-		this.UpdateGUI()
+		this.UpdateGUI(true)
 	}
 	
 	; =====================
@@ -578,8 +576,13 @@ Class IC_ClaimDailyPlatinum_Component
 		Gui, Submit, NoHide
 	}
 	
-	UpdateGUI()
+	UpdateGUI(CDP_clearStatuses := false)
 	{
+		if (CDP_clearStatuses || !this.Settings["Platinum"])
+			this.DailyBoostExpires := -1
+		if (CDP_clearStatuses || !this.Settings["Trials"])
+			this.TrialsStatus := this.TrialsPresetStatuses[5]
+	
 		GuiControl, ICScriptHub:, g_CDP_PlatinumTimer, % this.ProduceGUITimerMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_TrialsTimer, % this.ProduceGUITimerMessage("Trials")
 		GuiControl, ICScriptHub:, g_CDP_FreeOfferTimer, % this.ProduceGUITimerMessage("FreeOffer")

@@ -1,3 +1,5 @@
+18      July 2025 - v0.3.7
+ - Trivially improving the clearing of Daily Boost and Trials Status messages. Now also works when Platinum or Trials stop being claimed.
  4      July 2025 - v0.3.6
  - Modifying some timers for Trials slightly.
  - Properly making Daily Boost and Trials Status messages clear when script is stopped.
