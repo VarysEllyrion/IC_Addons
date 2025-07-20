@@ -1,0 +1,2 @@
+20      July 2024 - v0.0.1
+ - An add on that adds a way to quickly set up the Preferred Briv Stack Zones in the TurboHybrid addon.
