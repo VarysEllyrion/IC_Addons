@@ -39,14 +39,14 @@ Class IC_HybridTurboStacking_PreferredEnemies_Component
 		
 		posY += 25
 		Gui, ICScriptHub:Add, DropDownList, xs+10 y%posY% AltSubmit w165 vHTSPE_PreferredEnemies
-        choices := "All||TT: Ranged-only|TT: Mixed-only|TT: Melee-only|TT: Ranged+Mixed|TT: Mixed+Melee"
-        GuiControl, ICScriptHub:, HTSPE_PreferredEnemies, % "|" . choices
-        newWidth := this.DropDownSize(choices,,, 8)
-        GuiControlGet, hnwd, ICScriptHub:Hwnd, HTSPE_PreferredEnemies
-        SendMessage, 0x0160, newWidth, 0,, ahk_id %hnwd% ; CB_SETDROPPEDWIDTH
+		choices := "All||TT: Ranged-only|TT: Mixed-only|TT: Melee-only|TT: Ranged+Mixed|TT: Mixed+Melee"
+		GuiControl, ICScriptHub:, HTSPE_PreferredEnemies, % "|" . choices
+		newWidth := this.DropDownSize(choices,,, 8)
+		GuiControlGet, hnwd, ICScriptHub:Hwnd, HTSPE_PreferredEnemies
+		SendMessage, 0x0160, newWidth, 0,, ahk_id %hnwd% ; CB_SETDROPPEDWIDTH
 		
 		posY -= 2
-        Gui, ICScriptHub:Add, Button, x+10 y%posY% vHTSPE_Set gHTSPE_SetAndSave, Set Preferred Enemies and Save
+		Gui, ICScriptHub:Add, Button, x+10 y%posY% vHTSPE_Set gHTSPE_SetAndSave, Set Preferred Enemies and Save
 	}
 	
 }
