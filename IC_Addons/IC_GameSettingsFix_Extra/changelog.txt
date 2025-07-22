@@ -1,3 +1,5 @@
+22      July 2025 - v0.1.9
+ - Slightly changed logic so non-EGS platforms don't need to have the game open to find the settings file.
 26      June 2025 - v0.1.8
  - Changed how the addon finds the settings file with Irisiri's edit.
 29   January 2025 - v0.1.7

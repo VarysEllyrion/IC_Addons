@@ -126,6 +126,7 @@ GuiControl,ICScriptHub: +g, g_GameSettingsFixForceFix_Clicked, % buttonFunc
 if(IsObject(IC_BrivGemFarm_Component))
 {
 	g_GameSettingsFix.InjectAddon()
+	g_GameSettingsFix.Init()
 }
 else
 {
@@ -133,8 +134,6 @@ else
 	Gui, Submit, NoHide
 	return
 }
-
-g_GameSettingsFix.Init()
 
 Class IC_GameSettingsFix_Component
 {
@@ -165,24 +164,21 @@ Class IC_GameSettingsFix_Component
 		local addonDirLoc := splitStr[(splitStr.Count()-1)]
 		local addonLoc := "#include *i %A_LineFile%\..\..\" . addonDirLoc . "\IC_GameSettingsFix_Addon.ahk`n"
 		FileAppend, %addonLoc%, %g_BrivFarmModLoc%
-		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "CreateTimedFunctions"))
-		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StartTimedFunctions"))
-		g_BrivFarmAddonStopFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StopTimedFunctions"))
 		this.Injected := true
 	}
 	
 	Init()
 	{
-		Global
 		if (!this.Injected)
-			return ""
+			return
 		this.LoadSettings()
 		this.UpdateProfilesDDL(this.CurrentProfile)
 		this.CreateTooltips()
-		if (!IC_GameSettingsFix_Functions.IsGameClosed() AND (this.GameSettingsFileLocation == "" OR !FileExist(this.GameSettingsFileLocation)))
-			this.FindSettingsFile()
-		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(this.GameSettingsFileLocation)
+		this.FindSettingsFile()
 		this.UpdateMainStatus(this.WaitingMessage)
+		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "CreateTimedFunctions"))
+		g_BrivFarmAddonStartFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StartTimedFunctions"))
+		g_BrivFarmAddonStopFunctions.Push(ObjBindMethod(g_GameSettingsFix, "StopTimedFunctions"))
 	}
 	
 	LoadSettings(gsfPathToGetSettings := "")
@@ -468,6 +464,8 @@ Class IC_GameSettingsFix_Component
 		installPath := g_UserSettings["InstallPath"] ;Contains filename
 		if (InStr(installPath,"com.epicgames.launcher://"))
 		{
+			if (IC_GameSettingsFix_Functions.IsGameClosed())
+				return
 			webRequestLogLoc := g_SF.Memory.GetWebRequestLogLocation()
 			if (!InStr(webRequestLogLoc, "webRequestLog"))
 				return
@@ -478,9 +476,10 @@ Class IC_GameSettingsFix_Component
 			SplitPath, installPath,, settingsFileLoc
 			settingsFileLoc .= "\IdleDragons_Data\StreamingAssets\localSettings.json"
 		}
-		if (!FileExist(settingsFileLoc))
+		if (settingsFileLoc == "" || !FileExist(settingsFileLoc))
 			return
 		this.GameSettingsFileLocation := settingsFileLoc
+		this.ReadOnly := IC_GameSettingsFix_Functions.IsReadOnly(settingsFileLoc)
 		this.AddFileToGUIList(settingsFileLoc)
 	}
 	
