@@ -65,9 +65,19 @@ Gui, ICScriptHub:Add, Text, vg_CDP_FreeOffersCount xs%g_CDP_col2x% y+-%g_CDP_lin
 Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
 Gui, ICScriptHub:Add, Text, vg_CDP_FreeOfferTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
 
+; Claim Guide Quest Rewards - short.
+Gui, ICScriptHub:Font, w700
+Gui, ICScriptHub:Add, GroupBox, x%g_CDP_gbCol2% ys+0 Section w%g_CDP_gbWidth% h%g_CDP_gbHeight1%, Claim Guide Quest Rewards
+Gui, ICScriptHub:Font, w400
+Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimGuideQuests xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Guide Quest Rewards?
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Rewards Claimed:
+Gui, ICScriptHub:Add, Text, vg_CDP_GuideQuestsCount xs%g_CDP_col2x% y+-%g_CDP_lineHeight%  w%g_CDP_col2w%, 
+Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoGap% w%g_CDP_col1w% +Right, Time Until Next Check:
+Gui, ICScriptHub:Add, Text, vg_CDP_GuideQuestsTimer xs%g_CDP_col2x% y+-%g_CDP_lineHeight% w%g_CDP_col2w%, 
+
 ; Claim Free Premium Pack Bonus Chests - short.
 Gui, ICScriptHub:Font, w700
-Gui, ICScriptHub:Add, GroupBox, x%g_CDP_gbCol2% ys+0 Section w%g_CDP_gbWidth% h%g_CDP_gbHeight1%, Claim Free Premium Pack Bonus Chests
+Gui, ICScriptHub:Add, GroupBox, x%g_CDP_gbCol1% ys+%g_CDP_gbHeight1%+5 Section w%g_CDP_gbWidth% h%g_CDP_gbHeight1%, Claim Free Premium Pack Bonus Chests
 Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimBonusChests xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Free Premium Pack Bonus Chests?
 Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Bonus Chests Claimed:
@@ -77,7 +87,7 @@ Gui, ICScriptHub:Add, Text, vg_CDP_BonusChestsTimer xs%g_CDP_col2x% y+-%g_CDP_li
 
 ; Claim Celebration Rewards - short.
 Gui, ICScriptHub:Font, w700
-Gui, ICScriptHub:Add, GroupBox, x%g_CDP_gbCol1% ys+%g_CDP_gbHeight1%+5 Section w%g_CDP_gbWidth% h%g_CDP_gbHeight1%, Claim Celebration Rewards
+Gui, ICScriptHub:Add, GroupBox, x%g_CDP_gbCol2% ys+0 Section w%g_CDP_gbWidth% h%g_CDP_gbHeight1%, Claim Celebration Rewards
 Gui, ICScriptHub:Font, w400
 Gui, ICScriptHub:Add, Checkbox, vg_CDP_ClaimCelebrations xs%g_CDP_col1x% ys+%g_CDP_cbDist%, Claim Celebration Rewards?
 Gui, ICScriptHub:Add, Text, xs%g_CDP_col1x% y+%g_CDP_infoDist% w%g_CDP_col1w% +Right, Rewards Claimed:
@@ -100,7 +110,7 @@ Class IC_ClaimDailyPlatinum_Component
 	Injected := false
 	Running := false
 	TimerFunctions := {}
-	DefaultSettings := {"Platinum":true,"Trials":true,"FreeOffer":true,"BonusChests":true,"Celebrations":true}
+	DefaultSettings := {"Platinum":true,"Trials":true,"FreeOffer":true,"GuideQuests":true,"BonusChests":true,"Celebrations":true}
 	Settings := {}
 	; The timer for MainLoop:
 	MainLoopCD := 60000 ; in milliseconds = 1 minute.
@@ -111,13 +121,13 @@ Class IC_ClaimDailyPlatinum_Component
 	; No Timer Delay (for when I can't find a timer in the data)
 	NoTimerDelay := 28800000 ; in milliseconds = 8 hours.
 	; The current cooldown for each type:
-	CurrentCD := {"Platinum":0,"Trials":0,"FreeOffer":0,"BonusChests":0,"Celebrations":0}
+	CurrentCD := {"Platinum":0,"Trials":0,"FreeOffer":0,"GuideQuests":0,"BonusChests":0,"Celebrations":0}
 	; The amount of times each type has been claimed:
-	Claimed := {"Platinum":0,"Trials":0,"FreeOffer":0,"BonusChests":0,"Celebrations":0}
+	Claimed := {"Platinum":0,"Trials":0,"FreeOffer":0,"GuideQuests":0,"BonusChests":0,"Celebrations":0}
 	; The flags to tell the timers to pause if the script is waiting for the game to go offline.
-	Claimable := {"Platinum":false,"Trials":false,"FreeOffer":false,"BonusChests":false,"Celebrations":false}
+	Claimable := {"Platinum":false,"Trials":false,"FreeOffer":false,"GuideQuests":false,"BonusChests":false,"Celebrations":false}
 	; The names of each type
-	Names := {"Platinum":"Daily Platinum","Trials":"Trials Rewards","FreeOffer":"Weekly Offers","BonusChests":"Premium Bonus Chests","Celebrations":"Celebration Rewards"}
+	Names := {"Platinum":"Daily Platinum","Trials":"Trials Rewards","FreeOffer":"Weekly Offers","GuideQuests":"Guide Quests","BonusChests":"Premium Bonus Chests","Celebrations":"Celebration Rewards"}
 	FreeOfferIDs := []
 	BonusChestIDs := []
 	CelebrationCodes := []
@@ -126,7 +136,7 @@ Class IC_ClaimDailyPlatinum_Component
 	TrialsPresetStatuses := ["Unknown","Tiamat is Dead","Inactive","Sitting in Lobby",""]
 	TrialsStatus := this.TrialsPresetStatuses[5]
 	TiamatHP := [40,75,130,200,290,430,610,860,1200,1600]
-	StaggeredChecks := {"Platinum":1,"Trials":2,"FreeOffer":3,"BonusChests":4,"Celebrations":5}
+	StaggeredChecks := {"Platinum":1,"Trials":2,"FreeOffer":3,"GuideQuests":4,"BonusChests":5,"Celebrations":6}
 	
 	UserID := ""
 	UserHash := ""
@@ -174,9 +184,10 @@ Class IC_ClaimDailyPlatinum_Component
 		if(writeSettings)
 			g_SF.WriteObjectToJSON(IC_ClaimDailyPlatinum_Component.SettingsPath, this.Settings)
 		GuiControl, ICScriptHub:, g_CDP_ClaimPlatinum, % this.Settings["Platinum"]
-		GuiControl, ICScriptHub:, g_CDP_ClaimFreeOffer, % this.Settings["FreeOffer"]
-		GuiControl, ICScriptHub:, g_CDP_ClaimBonusChests, % this.Settings["BonusChests"]
 		GuiControl, ICScriptHub:, g_CDP_ClaimTrials, % this.Settings["Trials"]
+		GuiControl, ICScriptHub:, g_CDP_ClaimFreeOffer, % this.Settings["FreeOffer"]
+		GuiControl, ICScriptHub:, g_CDP_ClaimGuideQuests, % this.Settings["GuideQuests"]
+		GuiControl, ICScriptHub:, g_CDP_ClaimBonusChests, % this.Settings["BonusChests"]
 		GuiControl, ICScriptHub:, g_CDP_ClaimCelebrations, % this.Settings["Celebrations"]
 		for k,v in this.Settings
 			if (!v)
@@ -193,9 +204,10 @@ Class IC_ClaimDailyPlatinum_Component
 		this.CheckMissingOrExtraSettings()
 		
 		this.Settings["Platinum"] := g_CDP_ClaimPlatinum
-		this.Settings["FreeOffer"] := g_CDP_ClaimFreeOffer
-		this.Settings["BonusChests"] := g_CDP_ClaimBonusChests
 		this.Settings["Trials"] := g_CDP_ClaimTrials
+		this.Settings["FreeOffer"] := g_CDP_ClaimFreeOffer
+		this.Settings["GuideQuests"] := g_CDP_ClaimGuideQuests
+		this.Settings["BonusChests"] := g_CDP_ClaimBonusChests
 		this.Settings["Celebrations"] := g_CDP_ClaimCelebrations
 		
 		g_SF.WriteObjectToJSON(IC_ClaimDailyPlatinum_Component.SettingsPath, this.Settings)
@@ -381,6 +393,20 @@ Class IC_ClaimDailyPlatinum_Component
 				return [false, A_TickCount + (response.offers.time_remaining * 1000) + this.SafetyDelay]
 			}
 		}
+		else if (CDP_key == "GuideQuests")
+		{
+			params := this.GetBoilerplate()
+			response := g_ServerCalls.ServerCall("getcompletiondata",params)
+			if (IsObject(response) && response.success)
+			{
+				for k,v in response.data.guidequest
+				{
+					if (v.complete == 1 && v.rewards_claimed == 0)
+						return [true, 0]
+				}
+			}
+			return [false, A_TickCount + this.NoTimerDelay]
+		}
 		else if (CDP_key == "BonusChests")
 		{
 			this.BonusChestIDs := []
@@ -486,6 +512,17 @@ Class IC_ClaimDailyPlatinum_Component
 			this.Claimed[CDP_key] += this.ArrSize(this.FreeOfferIDs)
 			this.FreeOfferIDs := []
 		}
+		else if (CDP_key == "GuideQuests")
+		{
+			extraParams := "&collection_quest_id=-1" . params
+			response := g_ServerCalls.ServerCall("claimcollectionquestrewards",extraParams)
+			if (IsObject(response) && response.success && response.awarded_items.success)
+			{
+				CDP_numGuideQuestsClaimed := this.ArrSize(response.awarded_items.rewards_claimed_quest_ids)
+				if (CDP_numGuideQuestsClaimed > 0)
+					this.Claimed[CDP_key] += CDP_numGuideQuestsClaimed
+			}
+		}
 		else if (CDP_key == "BonusChests")
 		{
 			for k,v in this.BonusChestIDs
@@ -586,11 +623,13 @@ Class IC_ClaimDailyPlatinum_Component
 		GuiControl, ICScriptHub:, g_CDP_PlatinumTimer, % this.ProduceGUITimerMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_TrialsTimer, % this.ProduceGUITimerMessage("Trials")
 		GuiControl, ICScriptHub:, g_CDP_FreeOfferTimer, % this.ProduceGUITimerMessage("FreeOffer")
+		GuiControl, ICScriptHub:, g_CDP_GuideQuestsTimer, % this.ProduceGUITimerMessage("GuideQuests")
 		GuiControl, ICScriptHub:, g_CDP_BonusChestsTimer, % this.ProduceGUITimerMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_CelebrationsTimer, % this.ProduceGUITimerMessage("Celebrations")
 		GuiControl, ICScriptHub:, g_CDP_PlatinumDaysCount, % this.ProduceGUIClaimedMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_TrialsRewardsCount, % this.ProduceGUIClaimedMessage("Trials")
 		GuiControl, ICScriptHub:, g_CDP_FreeOffersCount, % this.ProduceGUIClaimedMessage("FreeOffer")
+		GuiControl, ICScriptHub:, g_CDP_GuideQuestsCount, % this.ProduceGUIClaimedMessage("GuideQuests")
 		GuiControl, ICScriptHub:, g_CDP_BonusChestsCount, % this.ProduceGUIClaimedMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_CelebrationRewardsCount, % this.ProduceGUIClaimedMessage("Celebrations")
 		
