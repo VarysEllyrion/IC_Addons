@@ -30,15 +30,15 @@ Class IC_HybridTurboStacking_PreferredEnemies_Component
 	{
 		Global
 		Gui, ICScriptHub:Tab, BrivGF HybridTurboStacking
-		GuiControlGet, pos, ICScriptHub:Pos, BGFHTS_BrivStack_Mod_50_50
+		GuiControlGet, pos, ICScriptHub:Pos, BGFHTS_BrivStack_Mod_50_41
 		
 		posY += 40
 		Gui, ICScriptHub:Font, w700
-		Gui, ICScriptHub:Add, Text, xs+10 y%posY% w400, Quick Select Preferred Enemy Types:
+		Gui, ICScriptHub:Add, Text, x%posX% y%posY% w400, Quick Select Preferred Enemy Types:
 		Gui, ICScriptHub:Font, w400
 		
 		posY += 25
-		Gui, ICScriptHub:Add, DropDownList, xs+10 y%posY% AltSubmit w165 vHTSPE_PreferredEnemies
+		Gui, ICScriptHub:Add, DropDownList, x%posX% y%posY% AltSubmit w165 vHTSPE_PreferredEnemies
 		choices := "All||TT: Ranged-only|TT: Mixed-only|TT: Melee-only|TT: Ranged+Mixed|TT: Mixed+Melee"
 		GuiControl, ICScriptHub:, HTSPE_PreferredEnemies, % "|" . choices
 		newWidth := this.DropDownSize(choices,,, 8)
