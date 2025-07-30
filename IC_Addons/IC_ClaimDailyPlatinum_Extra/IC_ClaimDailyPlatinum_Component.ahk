@@ -120,6 +120,7 @@ Class IC_ClaimDailyPlatinum_Component
 	SafetyDelay := 30000 ; in milliseconds = 30 seconds.
 	; No Timer Delay (for when I can't find a timer in the data)
 	NoTimerDelay := 28800000 ; in milliseconds = 8 hours.
+	NoTimerDelayRNG := 1800000 ; in milliseconds = 30 minutes.
 	; The current cooldown for each type:
 	CurrentCD := {"Platinum":0,"Trials":0,"FreeOffer":0,"GuideQuests":0,"BonusChests":0,"Celebrations":0}
 	; The amount of times each type has been claimed:
@@ -133,8 +134,8 @@ Class IC_ClaimDailyPlatinum_Component
 	CelebrationCodes := []
 	DailyBoostExpires := -1
 	TrialsCampaignID := 0
-	TrialsPresetStatuses := ["Unknown","Tiamat is Dead","Inactive","Sitting in Lobby",""]
-	TrialsStatus := this.TrialsPresetStatuses[5]
+	TrialsPresetStatuses := [["Trials Status","Tiamat Dies in","Trial Joinable in"],["Unknown","Tiamat is Dead","Inactive","Sitting in Lobby",""]]
+	TrialsStatus := [1,5]
 	TiamatHP := [40,75,130,200,290,430,610,860,1200,1600]
 	StaggeredChecks := {"Platinum":1,"Trials":2,"FreeOffer":3,"GuideQuests":4,"BonusChests":5,"Celebrations":6}
 	
@@ -340,7 +341,7 @@ Class IC_ClaimDailyPlatinum_Component
 				if (CDP_trialsData.pending_unclaimed_campaign != "")
 				{
 					this.TrialsCampaignID := CDP_trialsData.pending_unclaimed_campaign
-					this.TrialsStatus := this.TrialsPresetStatuses[2]
+					this.TrialsStatus := [1,2]
 					return [true, 0]
 				}
 				CDP_trialsCampaigns := CDP_trialsData.campaigns
@@ -359,19 +360,25 @@ Class IC_ClaimDailyPlatinum_Component
 					CDP_timeTilTiamatDies := ((CDP_tiamatHP == "" || CDP_currDPS == "" || CDP_currDPS <= 0) ? 99999999 : (CDP_tiamatHP / CDP_currDPS))
 					CDP_trialEndsIn := CDP_trialsCampaign.ends_in
 					CDP_timeToCheck := Min(CDP_timeTilTiamatDies,CDP_trialEndsIn) * 500
-					CDP_timeToCheck := Min(this.NoTimerDelay,CDP_timeToCheck)
+					CDP_timeToCheck := Min(this.CalcNoTimerDelay(),CDP_timeToCheck)
 					CDP_timeToCheck := Max(this.MainLoopCD,CDP_timeToCheck)
-					this.TrialsStatus := A_TickCount + CDP_timeTilTiamatDies * 1000
+					this.TrialsStatus := [2,A_TickCount + CDP_timeTilTiamatDies * 1000]
 					return [false, A_TickCount + CDP_timeToCheck]
 				}
 				if (CDP_trialsCampaigns != "" && CDP_trialsCampaignsSize > 0 && !CDP_trialsCampaigns[1].started)
 				{
-					this.TrialsStatus := this.TrialsPresetStatuses[4]
-					return [false, A_TickCount + this.NoTimerDelay]
+					this.TrialsStatus := [1,4]
+					return [false, A_TickCount + this.CalcNoTimerDelay()]
+				}
+				if (CDP_trialsData.seconds_until_can_join_campaign != "")
+				{
+					CDP_timeTilNextTrial := A_TickCount + CDP_trialsData.seconds_until_can_join_campaign * 1000
+					this.TrialsStatus := [3,CDP_timeTilNextTrial]
+					return [false, A_TickCount + this.CalcNoTimerDelay()]
 				}
 			}
-			this.TrialsStatus := this.TrialsPresetStatuses[3]
-			return [false, A_TickCount + this.NoTimerDelay]
+			this.TrialsStatus := [1,3]
+			return [false, A_TickCount + this.CalcNoTimerDelay()]
 		}
 		else if (CDP_key == "FreeOffer")
 		{
@@ -405,7 +412,7 @@ Class IC_ClaimDailyPlatinum_Component
 						return [true, 0]
 				}
 			}
-			return [false, A_TickCount + this.NoTimerDelay]
+			return [false, A_TickCount + this.CalcNoTimerDelay()]
 		}
 		else if (CDP_key == "BonusChests")
 		{
@@ -421,14 +428,14 @@ Class IC_ClaimDailyPlatinum_Component
 				if (this.ArrSize(this.BonusChestIDs) > 0)
 					return [true, 0]
 			}
-			return [false, A_TickCount + this.NoTimerDelay]
+			return [false, A_TickCount + this.CalcNoTimerDelay()]
 		}
 		else if (CDP_key == "Celebrations")
 		{
 			this.CelebrationCodes := []
 			wrlLoc := g_SF.Memory.GetWebRequestLogLocation()
 			if (wrlLoc == "")
-				return [false, A_TickCount + this.NoTimerDelay]
+				return [false, A_TickCount + this.CalcNoTimerDelay()]
 			webRequestLog := ""
 			FileRead, webRequestLog, %wrlLoc%
 			CDP_nextClaimSeconds := 9999999
@@ -460,7 +467,7 @@ Class IC_ClaimDailyPlatinum_Component
 			if (CDP_nextClaimSeconds < 9999999)
 				return [false, A_TickCount + (CDP_nextClaimSeconds * 1000) + this.SafetyDelay]
 			else
-				return [false, A_TickCount + this.NoTimerDelay]
+				return [false, A_TickCount + this.CalcNoTimerDelay()]
 		}
 		return [false, A_TickCount + this.StartingCD]
 	}
@@ -490,11 +497,11 @@ Class IC_ClaimDailyPlatinum_Component
 			if (!IsObject(response) || !response.success)
 			{
 				; server call failed
-				this.TrialsStatus := this.TrialsPresetStatuses[1]
+				this.TrialsStatus := [1,1]
 				return
 			}
 			this.Claimed[CDP_key] += 1
-			this.TrialsStatus := this.TrialsPresetStatuses[3]
+			this.TrialsStatus := [1,3]
 		}
 		else if (CDP_key == "FreeOffer")
 		{
@@ -603,6 +610,11 @@ Class IC_ClaimDailyPlatinum_Component
 		this.UpdateGUI(true)
 	}
 	
+	CalcNoTimerDelay()
+	{
+		return this.NoTimerDelay + this.RandInt(-this.NoTimerDelayRNG, this.NoTimerDelayRNG)
+	}
+	
 	; =====================
 	; ===== GUI STUFF =====
 	; =====================
@@ -618,7 +630,10 @@ Class IC_ClaimDailyPlatinum_Component
 		if (CDP_clearStatuses || !this.Settings["Platinum"])
 			this.DailyBoostExpires := -1
 		if (CDP_clearStatuses || !this.Settings["Trials"])
-			this.TrialsStatus := this.TrialsPresetStatuses[5]
+			this.TrialsStatus := [1,5]
+			
+		if (this.TrialsStatus[1] == 3 && this.TrialsStatus[2] < A_TickCount)
+			this.TrialsStatus := [1,3]
 	
 		GuiControl, ICScriptHub:, g_CDP_PlatinumTimer, % this.ProduceGUITimerMessage("Platinum")
 		GuiControl, ICScriptHub:, g_CDP_TrialsTimer, % this.ProduceGUITimerMessage("Trials")
@@ -633,9 +648,8 @@ Class IC_ClaimDailyPlatinum_Component
 		GuiControl, ICScriptHub:, g_CDP_BonusChestsCount, % this.ProduceGUIClaimedMessage("BonusChests")
 		GuiControl, ICScriptHub:, g_CDP_CelebrationRewardsCount, % this.ProduceGUIClaimedMessage("Celebrations")
 		
-		CDP_arrHasValue := this.ArrHasValue(this.TrialsPresetStatuses,this.TrialsStatus)
-		GuiControl, ICScriptHub:, g_CDP_TrialsStatusHeader, % (CDP_arrHasValue ? "Trials Status:" : "Tiamat Dies in:")
-		GuiControl, ICScriptHub:, g_CDP_TrialsStatus, % (CDP_arrHasValue ? this.TrialsStatus : (this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.TrialsStatus)) . " (est)"))
+		GuiControl, ICScriptHub:, g_CDP_TrialsStatusHeader, % (this.TrialsPresetStatuses[1][this.TrialsStatus[1]]) . ":"
+		GuiControl, ICScriptHub:, g_CDP_TrialsStatus, % (this.TrialsStatus[1] == 1 ? this.TrialsPresetStatuses[2][this.TrialsStatus[2]] : (this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.TrialsStatus[2])) . (this.TrialsStatus[1] == 2 ? " (est)" : "")))
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostHeader, % "Daily Boost" . (this.DailyBoostExpires > 0 ? " Expires" : "") . ":"
 		GuiControl, ICScriptHub:, g_CDP_DailyBoostExpires, % (this.DailyBoostExpires > 0 ? this.FmtSecs(this.CeilMillisecondsToNearestMainLoopCDSeconds(this.DailyBoostExpires)) : (this.DailyBoostExpires == 0 ? "Inactive" : ""))
 		Gui, Submit, NoHide
@@ -703,6 +717,13 @@ Class IC_ClaimDailyPlatinum_Component
 	GetBoilerplate()
 	{
 		return "&user_id=" . (this.UserID) . "&hash=" . (this.UserHash) . "&instance_id=" . (this.InstanceID) . "&language_id=1&timestamp=0&request_id=0&network_id=" . (this.Platform) . "&mobile_client_version=" . (this.GameVersion) . "&instance_key=1&offline_v2_build=1&localization_aware=true"
+	}
+
+	RandInt(min,max)
+	{
+		r := min
+		Random,r,min,max
+		return r
 	}
 	
 }

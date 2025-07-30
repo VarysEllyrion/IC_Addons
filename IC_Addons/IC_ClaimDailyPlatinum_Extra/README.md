@@ -33,8 +33,8 @@ ___
 The second section of the addon determines whether the script will try to claim the rewards from Trials of Mount Tiamat.
 
 The timer for it is initialised to check 2 minutes after starting the Gem Farm script. After that it gets complicated.
-- If the Trial is not running or is in the lobby then it will check every 8 hours.
-- If the Trial is running it will calculate how long before Tiamat dies based on her current HP and total DPS and check again after half of that much time or 8 hours (whichever is shorter).
+- If the Trial is not running or is in the lobby then it will check every 8 hours ± 30 minutes.
+- If the Trial is running it will calculate how long before Tiamat dies based on her current HP and total DPS and check again after half of that much time or 8 hours ± 30 minutes (whichever is shorter).
 
 This is all to try to make sure it will claim the reward at most a couple of minutes after the Trial ends - and that it can cope with DPS changes as players do more damage and complete their daily goals.
 
@@ -61,7 +61,7 @@ ___
 
 The fourth section determines whether the script will try to claim the rewards for any completed guide quests.
 
-The timer for it is initialised to check 4 minutes after starting the Gem Farm script - and it will check again every 8 hours.
+The timer for it is initialised to check 4 minutes after starting the Gem Farm script - and it will check again every 8 hours ± 30 minutes.
 
 This setting is on by default.
 
@@ -71,7 +71,7 @@ ___
 
 The fifth option will try to claim the bonus chests available when a premium pack that you've already bought goes on sale.
 
-The timer for it is initialised to check 4 minutes after starting the Gem Farm Script - and it will check again every 8 hours.
+The timer for it is initialised to check 4 minutes after starting the Gem Farm Script - and it will check again every 8 hours ± 30 minutes.
 
 This setting is on by default.
 
@@ -81,6 +81,6 @@ ___
 
 The sixth option will try to claim rewards available during a Celebration event such as the seasonal celebrations - where you get one chest per day and an extra special one if you claim at least four days.
 
-The timer for it is initialised to check 5 minutes after starting the Gem Farm Script. If the addon can see there is a celebration running and can pull a timer from it - it will check when the next day will be claimable. Otherwise it checks every 8 hours.
+The timer for it is initialised to check 5 minutes after starting the Gem Farm Script. If the addon can see there is a celebration running and can pull a timer from it - it will check when the next day will be claimable. Otherwise it checks every 8 hours ± 30 minutes.
 
 This setting is on by default.
