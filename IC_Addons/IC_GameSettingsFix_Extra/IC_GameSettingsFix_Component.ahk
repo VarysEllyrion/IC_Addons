@@ -31,15 +31,17 @@ Gui, ICScriptHub:Add, Text, xs%g_GSF_xpos% ys+24 w38 +Right, Profiles:
 g_GSF_xpos += 48
 Gui, ICScriptHub:Add, DDL, xs%g_GSF_xpos% y+-17 w150 vg_GSF_Profiles, 
 g_GSF_xpos += 160
-Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y+-23 w80 vg_GameSettingsFixSaveProfile_Clicked, `Save Profile
+GuiControlGet, pos, ICScriptHub:Pos, g_GSF_Profiles
+posY -= 1
+Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y%posY% w80 vg_GameSettingsFixSaveProfile_Clicked, `Save Profile
 buttonFunc := ObjBindMethod(g_GameSettingsFix, "SaveProfile")
 GuiControl,ICScriptHub: +g, g_GameSettingsFixSaveProfile_Clicked, % buttonFunc
 g_GSF_xpos += 90
-Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y+-24 w80 vg_GameSettingsFixLoadProfile_Clicked, `Load Profile
+Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y%posY% w80 vg_GameSettingsFixLoadProfile_Clicked, `Load Profile
 buttonFunc := ObjBindMethod(g_GameSettingsFix, "LoadProfile")
 GuiControl,ICScriptHub: +g, g_GameSettingsFixLoadProfile_Clicked, % buttonFunc
 g_GSF_xpos += 90
-Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y+-24 w80 vg_GameSettingsFixDeleteProfile_Clicked, `Delete Profile
+Gui, ICScriptHub:Add, Button, xs%g_GSF_xpos% y%posY% w80 vg_GameSettingsFixDeleteProfile_Clicked, `Delete Profile
 buttonFunc := ObjBindMethod(g_GameSettingsFix, "DeleteProfile")
 GuiControl,ICScriptHub: +g, g_GameSettingsFixDeleteProfile_Clicked, % buttonFunc
 
